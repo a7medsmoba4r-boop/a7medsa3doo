@@ -1,3 +1,4 @@
+// كود التودو لست الأصلي
 const taskInput = document.getElementById("task-input");
 const addBtn = document.getElementById("add-btn");
 const taskList = document.getElementById("task-list");
@@ -9,36 +10,31 @@ const inprogressCount = document.getElementById("inprogress-count");
 
 let taskIdCounter = 0; // معرف فريد لكل مهمة
 
-// تحديث عداد الصناديق
 function updateCounts() {
   completedCount.textContent = completedTasks.children.length;
   inprogressCount.textContent = inprogressTasks.children.length;
 }
 
-// عرض رسالة
 function showMessage(text) {
   message.textContent = text;
   message.style.display = "block";
   setTimeout(() => message.style.display = "none", 1500);
 }
 
-// إنشاء عنصر مهمة
 function createTaskElement(taskText, isCompleted = false) {
   const li = document.createElement("li");
-  li.dataset.id = taskIdCounter++; // كل مهمة لها معرف فريد
+  li.dataset.id = taskIdCounter++;
 
   const spanText = document.createElement("span");
   spanText.textContent = taskText;
   spanText.classList.add("task-text");
   li.appendChild(spanText);
 
-  // زر X
   const delBtn = document.createElement("button");
   delBtn.textContent = "X";
   delBtn.classList.add("delete-btn");
   li.appendChild(delBtn);
 
-  // زر ✔ يظهر فقط في Completed
   if(isCompleted) {
     const doneBtn = document.createElement("button");
     doneBtn.textContent = "✔";
@@ -49,7 +45,6 @@ function createTaskElement(taskText, isCompleted = false) {
   return li;
 }
 
-// إزالة المهمة من جميع الحاويات حسب ID
 function removeTaskById(taskId) {
   [taskList, inprogressTasks, completedTasks].forEach(container => {
     [...container.children].forEach(li => {
@@ -58,25 +53,21 @@ function removeTaskById(taskId) {
   });
 }
 
-// إضافة مهمة جديدة
 function addTask() {
   const taskText = taskInput.value.trim();
   if(taskText === "") return;
 
-  // إضافة للمستطيل الأوسط
   const liMiddle = createTaskElement(taskText);
   taskList.appendChild(liMiddle);
 
-  // إضافة للمربع الأصفر
   const liInProgress = createTaskElement(taskText);
-  liInProgress.dataset.id = liMiddle.dataset.id; // نفس الـID
+  liInProgress.dataset.id = liMiddle.dataset.id;
   inprogressTasks.appendChild(liInProgress);
 
   taskInput.value = "";
   updateCounts();
 }
 
-// نقل المهمة للCompleted
 function moveToCompleted(taskId, taskText) {
   removeTaskById(taskId);
   const li = createTaskElement(taskText, true);
@@ -86,15 +77,12 @@ function moveToCompleted(taskId, taskText) {
   updateCounts();
 }
 
-// زر Add
 addBtn.addEventListener("click", addTask);
 
-// زر Enter
 taskInput.addEventListener("keydown", function(e) {
   if(e.key === "Enter") addTask();
 });
 
-// التعامل مع الأزرار فقط (X) في Middle و In Progress
 function handleTaskClick(e) {
   const li = e.target.closest("li");
   if(!li) return;
@@ -107,7 +95,6 @@ function handleTaskClick(e) {
   }
 }
 
-// التعامل مع الدبل كليك لنقل المهمة للCompleted
 function handleTaskDblClick(e) {
   const li = e.target.closest("li");
   if(!li) return;
@@ -115,19 +102,16 @@ function handleTaskDblClick(e) {
   const taskId = li.dataset.id;
   const taskText = li.querySelector(".task-text").textContent;
 
-  // لو مش موجودة في Completed → انقلها
   if(!li.parentElement.isSameNode(completedTasks)) {
     moveToCompleted(taskId, taskText);
   }
 }
 
-// الأحداث
 taskList.addEventListener("click", handleTaskClick);
 inprogressTasks.addEventListener("click", handleTaskClick);
 taskList.addEventListener("dblclick", handleTaskDblClick);
 inprogressTasks.addEventListener("dblclick", handleTaskDblClick);
 
-// التعامل مع زر X أو ✔ في Completed
 completedTasks.addEventListener("click", (e) => {
   const li = e.target.closest("li");
   if(!li) return;
@@ -136,7 +120,6 @@ completedTasks.addEventListener("click", (e) => {
   const taskText = li.querySelector(".task-text").textContent;
 
   if(e.target.classList.contains("delete-btn")) {
-    // X يرجع المهمة للمستطيل الأوسط والأصفر
     removeTaskById(taskId);
     const liMiddle = createTaskElement(taskText);
     const liInProgress = createTaskElement(taskText);
@@ -146,9 +129,21 @@ completedTasks.addEventListener("click", (e) => {
     inprogressTasks.appendChild(liInProgress);
     updateCounts();
   } else if(e.target.classList.contains("done-btn")) {
-    // ✔ يمسح المهمة مباشرة من Completed
     li.remove();
     updateCounts();
   }
 });
-// force update
+
+// كود Hamburger Menu
+const menuBtn = document.getElementById("menu-btn");
+const menuDropdown = document.getElementById("menu-dropdown");
+
+menuBtn.addEventListener("click", () => {
+  menuDropdown.style.display = menuDropdown.style.display === "block" ? "none" : "block";
+});
+
+document.addEventListener("click", (e) => {
+  if(!menuBtn.contains(e.target) && !menuDropdown.contains(e.target)) {
+    menuDropdown.style.display = "none";
+  }
+});

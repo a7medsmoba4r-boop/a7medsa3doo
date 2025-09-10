@@ -37,7 +37,7 @@ h1 {
   color: #2c3e50;
 }
 
-/* الصناديق الجديدة */
+/* الصناديق الأصلية */
 .completed-container, .inprogress-container {
   width: 250px;
   height: 180px;
@@ -54,6 +54,40 @@ h1 {
 .inprogress-container {
   border: 1px solid #f1c40f;
   background-color: #fff3cd;
+}
+
+/* Hamburger Menu */
+.hamburger-menu {
+  position: relative;
+  margin-bottom: 20px;
+}
+
+#menu-btn {
+  font-size: 24px;
+  cursor: pointer;
+}
+
+#menu-dropdown {
+  display: none;
+  position: absolute;
+  top: 30px;
+  left: 0;
+  background-color: white;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  width: 150px;
+  list-style: none;
+  padding: 5px 0;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+
+#menu-dropdown li {
+  padding: 8px 15px;
+  cursor: pointer;
+}
+
+#menu-dropdown li:hover {
+  background-color: #f4f6f7;
 }
 
 /* الحاوية الوسطى */
