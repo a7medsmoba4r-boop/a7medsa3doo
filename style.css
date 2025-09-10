@@ -1,236 +1,206 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+
 body {
-  font-family: Arial, sans-serif;
-  background: linear-gradient(to bottom, #f4f6f7, #e0e5ec);
+  font-family: 'Inter', sans-serif;
   margin: 0;
   padding: 20px;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  background: #f4f6f7; /* خلفية بيضا هادية */
+  color: #333;
 }
 
-/* الحاوية الرئيسية */
+/* Main Container */
 .main-container {
   display: flex;
   justify-content: center;
   align-items: flex-start;
-  gap: 50px;
-  min-height: 80vh;
+  gap: 40px;
+  width: 100%;
+  max-width: 1200px;
 }
 
-/* الحاوية الشمال */
+/* Left Container */
 .left-container {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 25px;
   flex-shrink: 0;
-  align-items: flex-start;
-  width: 250px;
+  width: 260px;
 }
 
-/* العناوين فوق الصناديق */
+/* Titles */
 .box-title {
-  font-size: 14px;
-  font-weight: bold;
-  margin-bottom: 5px;
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 8px;
   color: #2c3e50;
 }
 
-/* الحاويات الجانبية */
+/* Boxes */
 .completed-container, .inprogress-container {
   width: 100%;
   min-height: 180px;
   max-height: 400px;
-  border-radius: 10px;
-  padding: 10px;
+  border-radius: 20px;
+  padding: 15px;
   overflow-y: auto;
-  background-color: rgba(255,255,255,0.9);
-  border: 1px solid #ccc;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid #c3540b;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
 }
-.completed-container { border-color: #2ecc71; }
-.inprogress-container { border-color: #f1c40f; }
 
-/* الحاوية الوسطى */
+/* Middle Container */
 .middle-container {
   display: flex;
   flex-direction: column;
   align-items: center;
   flex-shrink: 0;
   margin-top: 50px;
-  width: 350px;
-  background-color: rgba(255,255,255,0.95);
-  border-radius: 12px;
-  box-shadow: 0 6px 12px rgba(0,0,0,0.15);
-  padding: 20px;
+  width: 380px;
+  background: #fff;
+  border-radius: 25px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+  padding: 30px;
+  position: relative;
+  overflow: hidden;
 }
 
-/* كلمة MY TASKS */
+/* Page Title */
 #page-title {
-  font-size: 20px;
-  font-weight: bold;
-  margin-bottom: 15px;
+  font-size: 26px;
+  font-weight: 800;
+  margin-bottom: 25px;
+  color: #2c3e50;
 }
 
-/* الإدخال + زر الإضافة */
+/* Input & Add Button */
 .input-container {
   display: flex;
   align-items: center;
-  margin-bottom: 20px;
+  margin-bottom: 25px;
+  width: 100%;
 }
 input {
-  padding: 12px;
-  width: 250px;
+  padding: 14px;
+  flex-grow: 1;
   border: 1px solid #ccc;
-  border-radius: 8px;
-  font-size: 14px;
+  border-radius: 25px;
+  font-size: 16px;
+  background: #f9f9f9;
+  color: #333;
+  transition: all 0.3s;
 }
+input::placeholder { color: #999; }
+input:focus { outline: none; border-color: #2ecc71; }
+
 button {
-  padding: 12px 20px;
-  background-color: #2ecc71;
-  color: white;
+  padding: 14px 24px;
+  margin-left: 15px;
   border: none;
-  border-radius: 8px;
+  border-radius: 25px;
   cursor: pointer;
-  margin-left: 10px;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-  transition: all 0.2s ease-in-out;
+  font-weight: 700;
+  color: #fff;
+  background: #2ecc71; /* لونك المميز */
+  transition: all 0.3s;
 }
 button:hover {
-  background-color: #27ae60;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 10px rgba(0,0,0,0.25);
+  transform: scale(1.05);
+  background: #27ae60;
 }
 
-/* مربع المهام */
+/* Task Box */
 .task-box {
   width: 100%;
-  max-height: 300px;
-  border-radius: 10px;
-  background-color: #fff;
+  max-height: 350px;
+  border-radius: 25px;
+  background: #fdfdfd;
   overflow-y: auto;
-  padding: 10px;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  padding: 20px;
+  box-shadow: 0 6px 25px rgba(0,0,0,0.05);
+  transition: all 0.3s;
 }
 
-ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
+/* Task Items */
+ul { list-style: none; padding: 0; margin: 0; }
 
 li {
   display: flex;
   align-items: center;
-  padding: 10px 12px;
-  border-bottom: 1px solid #eee;
-  margin-bottom: 5px;
-  border-radius: 6px;
-  background-color: #fafafa;
-  transition: all 0.2s ease;
+  padding: 14px 18px;
+  margin-bottom: 12px;
+  border-radius: 20px;
+  background: #f7f7f7;
+  color: #333;
+  transition: all 0.2s;
+  border: 1px solid #e0e0e0;
 }
-li:hover { background-color: #f0f4f7; }
+li:hover { background: #e9f5f1; }
 
-/* نص المهمة */
-li span.task-text { flex-grow: 1; margin-left: 10px; }
-.completed { text-decoration: line-through; color: gray; opacity: 0.7; }
+li span.task-text { flex-grow: 1; margin-left: 12px; }
+.completed { text-decoration: line-through; opacity: 0.6; color: #999; }
 
-/* زر X */
+/* Delete Button */
 .delete-btn {
-  background-color: red;
-  color: white;
+  background-color: #e74c3c;
+  color: #fff;
   border: none;
-  border-radius: 6px;
-  width: 32px;
-  height: 32px;
+  border-radius: 14px;
+  width: 36px;
+  height: 36px;
   cursor: pointer;
   font-weight: bold;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 16px;
-  margin-left: 5px;
+  margin-left: 6px;
   transition: all 0.2s;
 }
-.delete-btn:hover { background-color: darkred; transform: scale(1.1); }
+.delete-btn:hover { background-color: #c0392b; transform: scale(1.1); }
 
-/* زر ✔ */
+/* Done Button */
 .done-btn {
   background-color: #2ecc71;
-  color: white;
+  color: #fff;
   border: none;
-  border-radius: 6px;
-  width: 32px;
-  height: 32px;
+  border-radius: 14px;
+  width: 36px;
+  height: 36px;
   cursor: pointer;
   font-weight: bold;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 16px;
-  margin-left: 5px;
+  margin-left: 6px;
   transition: all 0.2s;
 }
 .done-btn:hover { background-color: #27ae60; transform: scale(1.1); }
 
-/* رسالة الإنجاز */
+/* Message */
 #message {
   display: none;
-  color: #155724;
+  color: #27ae60;
   background-color: #d4edda;
   border: 1px solid #c3e6cb;
-  padding: 10px 20px;
-  border-radius: 8px;
-  font-weight: bold;
+  padding: 12px 25px;
+  border-radius: 25px;
+  font-weight: 700;
   text-align: center;
   min-width: 200px;
-  margin-top: 10px;
+  margin-top: 12px;
 }
-
-/* Hamburger Menu CSS */
-.hamburger-menu {
-  width: 35px;
-  height: 25px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  cursor: pointer;
-  position: fixed;
-  top: 20px;
-  left: 20px;
-  z-index: 101;
-}
-.hamburger-menu div {
-  height: 4px;
-  background-color: #2c3e50;
-  border-radius: 2px;
-  transition: all 0.3s ease;
-}
-
-.dropdown-menu {
-  display: none;
-  position: fixed;
-  top: 60px;
-  left: 20px;
-  background-color: rgb(21, 21, 21);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-  border-radius: 8px;
-  padding: 10px;
-  z-index: 100;
-}
-
-.dropdown-menu.show { display: block; }
-
-.dropdown-menu ul { margin: 0; padding: 0; }
-.dropdown-menu li {
-  list-style: none;
-  padding: 8px 12px;
-  cursor: pointer;
-}
-.dropdown-menu li:hover { background-color: #f0f0f0; }
 
 /* Responsive */
 @media screen and (max-width: 768px) {
   .main-container {
     flex-direction: column;
     align-items: center;
-    gap: 20px;
+    gap: 25px;
   }
   .left-container {
     width: 90%;
