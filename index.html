@@ -7,21 +7,25 @@
 </head>
 <body>
 
+  <!-- ===== 3 شرط + القائمة ===== -->
+  <div class="menu-btn" id="menu-btn">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+
+  <div class="menu-content" id="menu-content">
+    <ul>
+      <li>New Chat</li>
+      <li>Recent 1</li>
+      <li>Recent 2</li>
+    </ul>
+  </div>
+
+  <!-- ===== المشروع الأصلي ===== -->
   <div class="main-container">
 
-    <!-- الحاوية الشمال -->
     <div class="left-container">
-
-      <!-- زر 3 شرط Menu -->
-      <div class="hamburger-menu">
-        <div id="menu-btn">&#9776;</div> <!-- رمز 3 شرط -->
-        <ul id="menu-dropdown">
-          <li>New Chat</li>
-          <li>Recent Chats</li>
-        </ul>
-      </div>
-
-      <!-- الصناديق الأصلية -->
       <div class="box-title">Completed Tasks <span id="completed-count">0</span></div>
       <div class="completed-container">
         <ul id="completed-tasks"></ul>
@@ -33,7 +37,6 @@
       </div>
     </div>
 
-    <!-- المستطيل الأوسط + كلمة MY TASKS -->
     <div class="middle-container">
       <div id="page-title">MY TASKS</div>
       <div class="input-container">

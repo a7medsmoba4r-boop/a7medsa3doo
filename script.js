@@ -1,4 +1,11 @@
-// كود التودو لست الأصلي
+// ===== 3 شرط القائمة =====
+const menuBtn = document.getElementById("menu-btn");
+const menuContent = document.getElementById("menu-content");
+menuBtn.addEventListener("click", () => {
+  menuContent.style.display = menuContent.style.display === "block" ? "none" : "block";
+});
+
+// ===== مشروع المهام القديم =====
 const taskInput = document.getElementById("task-input");
 const addBtn = document.getElementById("add-btn");
 const taskList = document.getElementById("task-list");
@@ -8,7 +15,7 @@ const message = document.getElementById("message");
 const completedCount = document.getElementById("completed-count");
 const inprogressCount = document.getElementById("inprogress-count");
 
-let taskIdCounter = 0; // معرف فريد لكل مهمة
+let taskIdCounter = 0;
 
 function updateCounts() {
   completedCount.textContent = completedTasks.children.length;
@@ -41,15 +48,12 @@ function createTaskElement(taskText, isCompleted = false) {
     doneBtn.classList.add("done-btn");
     li.appendChild(doneBtn);
   }
-
   return li;
 }
 
 function removeTaskById(taskId) {
   [taskList, inprogressTasks, completedTasks].forEach(container => {
-    [...container.children].forEach(li => {
-      if(li.dataset.id == taskId) li.remove();
-    });
+    [...container.children].forEach(li => { if(li.dataset.id == taskId) li.remove(); });
   });
 }
 
@@ -78,17 +82,12 @@ function moveToCompleted(taskId, taskText) {
 }
 
 addBtn.addEventListener("click", addTask);
-
-taskInput.addEventListener("keydown", function(e) {
-  if(e.key === "Enter") addTask();
-});
+taskInput.addEventListener("keydown", e => { if(e.key==="Enter") addTask(); });
 
 function handleTaskClick(e) {
   const li = e.target.closest("li");
   if(!li) return;
-
   const taskId = li.dataset.id;
-
   if(e.target.classList.contains("delete-btn")) {
     li.remove();
     updateCounts();
@@ -98,13 +97,9 @@ function handleTaskClick(e) {
 function handleTaskDblClick(e) {
   const li = e.target.closest("li");
   if(!li) return;
-
   const taskId = li.dataset.id;
   const taskText = li.querySelector(".task-text").textContent;
-
-  if(!li.parentElement.isSameNode(completedTasks)) {
-    moveToCompleted(taskId, taskText);
-  }
+  if(!li.parentElement.isSameNode(completedTasks)) moveToCompleted(taskId, taskText);
 }
 
 taskList.addEventListener("click", handleTaskClick);
@@ -112,10 +107,9 @@ inprogressTasks.addEventListener("click", handleTaskClick);
 taskList.addEventListener("dblclick", handleTaskDblClick);
 inprogressTasks.addEventListener("dblclick", handleTaskDblClick);
 
-completedTasks.addEventListener("click", (e) => {
+completedTasks.addEventListener("click", e => {
   const li = e.target.closest("li");
   if(!li) return;
-
   const taskId = li.dataset.id;
   const taskText = li.querySelector(".task-text").textContent;
 
@@ -131,19 +125,5 @@ completedTasks.addEventListener("click", (e) => {
   } else if(e.target.classList.contains("done-btn")) {
     li.remove();
     updateCounts();
-  }
-});
-
-// كود Hamburger Menu
-const menuBtn = document.getElementById("menu-btn");
-const menuDropdown = document.getElementById("menu-dropdown");
-
-menuBtn.addEventListener("click", () => {
-  menuDropdown.style.display = menuDropdown.style.display === "block" ? "none" : "block";
-});
-
-document.addEventListener("click", (e) => {
-  if(!menuBtn.contains(e.target) && !menuDropdown.contains(e.target)) {
-    menuDropdown.style.display = "none";
   }
 });
