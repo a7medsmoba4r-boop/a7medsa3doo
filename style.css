@@ -21,9 +21,7 @@
   --message-border: #c3e6cb;
 }
 
-/* -------------------------
-   Dark Mode Overrides
-------------------------- */
+/* Dark Mode Overrides */
 body.dark {
   --bg: #071227;
   --card: #0b1220;
@@ -42,9 +40,7 @@ body.dark {
   --message-border: #113b26;
 }
 
-/* -------------------------
-   Base Styles
-------------------------- */
+/* Base Styles */
 body {
   font-family: 'Inter', sans-serif;
   margin: 0;
@@ -58,9 +54,7 @@ body {
   transition: background 0.25s ease, color 0.25s ease;
 }
 
-/* -------------------------
-   Top Buttons
-------------------------- */
+/* Top Buttons */
 .top-buttons {
   position: absolute;
   top: 20px;
@@ -90,9 +84,7 @@ body {
   margin-left: 10px;
 }
 
-/* -------------------------
-   Tasks Container
-------------------------- */
+/* Tasks Container */
 .tasks-container {
   display: flex;
   justify-content: center;
@@ -141,115 +133,11 @@ body {
   border: 1px solid #e0e0e0;
   transition: background 0.3s, transform 0.3s, opacity 0.3s;
 }
-.task-column li:hover {
-  background: var(--item-hover);
-}
-.task-column li span {
-  flex-grow: 1;
-}
-.task-column li.completed {
-  text-decoration: line-through;
-  color: #888;
-  opacity: 0.7;
-}
+.task-column li:hover { background: var(--item-hover); }
+.task-column li span { flex-grow: 1; }
+.task-column li.completed { text-decoration: line-through; color: #888; opacity: 0.7; }
 
-/* -------------------------
-   Clear All Button
-------------------------- */
-.clear-btn {
-  margin-top: 12px;
-  padding: 8px 12px;
-  border-radius: 10px;
-  border: 1px solid rgba(0,0,0,0.06);
-  background: transparent;
-  cursor: pointer;
-  font-weight: 700;
-  font-size: 13px;
-  transition: transform .15s;
-}
-.clear-btn:hover { transform: scale(1.03); }
-
-body.dark .clear-btn {
-  color: #e6eef8;
-  border: 1px solid #445;
-  background: #0f1a2f;
-}
-body.dark .clear-btn:hover {
-  background: #1b2a45;
-}
-
-/* -------------------------
-   Input Bottom
-------------------------- */
-.input-container-bottom {
-  position: fixed;
-  bottom: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  display: flex;
-  align-items: center;
-  width: 90%;
-  max-width: 720px;
-  justify-content: center;
-  z-index: 100;
-  background: transparent;
-}
-.input-container-bottom input {
-  padding: 18px;
-  flex-grow: 1;
-  border: 1px solid #ccc;
-  border-radius: 25px;
-  font-size: 18px;
-  background: var(--item-bg);
-  color: var(--text);
-  transition: all 0.3s;
-}
-.input-container-bottom input::placeholder { color: #999; }
-.input-container-bottom input:focus {
-  outline: none;
-  border-color: var(--primary);
-}
-.input-container-bottom button {
-  padding: 18px 28px;
-  margin-left: 15px;
-  border: none;
-  border-radius: 25px;
-  cursor: pointer;
-  font-weight: 700;
-  color: #fff;
-  background: var(--primary);
-  transition: all 0.3s;
-}
-.input-container-bottom button:hover {
-  transform: scale(1.05);
-  background: var(--primary-hover);
-}
-
-/* -------------------------
-   Message Popup
-------------------------- */
-#message {
-  position: fixed;
-  top: 80px;
-  left: 50%;
-  transform: translateX(-50%);
-  display: none;
-  opacity: 0;
-  color: var(--message-text);
-  background-color: var(--message-bg);
-  border: 1px solid var(--message-border);
-  padding: 12px 25px;
-  border-radius: 25px;
-  font-weight: 700;
-  text-align: center;
-  min-width: 200px;
-  z-index: 200;
-  transition: opacity 0.4s ease;
-}
-
-/* -------------------------
-   Delete Button
-------------------------- */
+/* Delete Button */
 .delete-btn {
   background-color: var(--danger);
   color: #fff;
@@ -271,19 +159,177 @@ body.dark .clear-btn:hover {
   transform: scale(1.1);
 }
 
-/* -------------------------
-   Animations
-------------------------- */
-.task-enter {
-  opacity: 0;
-  transform: translateY(10px);
-  background-color: var(--success-bg);
+/* Edit Button */
+.edit-btn {
+  background-color: var(--primary);
+  color: #fff;
+  border: none;
+  border-radius: 14px;
+  width: 36px;
+  height: 36px;
+  cursor: pointer;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  margin-left: 6px;
+  transition: all 0.2s;
 }
-.task-exit {
-  opacity: 0;
-  transform: translateY(-10px);
-  background-color: #f8d7da;
+.edit-btn:hover {
+  background-color: var(--primary-hover);
+  transform: scale(1.1);
 }
+
+/* Clear All Button */
+.clear-btn {
+  margin-top: 12px;
+  padding: 8px 12px;
+  border-radius: 10px;
+  border: 1px solid rgba(0,0,0,0.06);
+  background: transparent;
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 13px;
+  transition: transform .15s;
+}
+.clear-btn:hover { transform: scale(1.03); }
+
+body.dark .clear-btn {
+  color: #e6eef8;
+  border: 1px solid #445;
+  background: #0f1a2f;
+}
+body.dark .clear-btn:hover { background: #1b2a45; }
+
+/* Input Bottom */
+.input-container-bottom {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  width: 90%;
+  max-width: 720px;
+  justify-content: center;
+  z-index: 100;
+  background: transparent;
+}
+
+.input-container-bottom input {
+  padding: 18px;
+  flex-grow: 1;
+  border: 1px solid #ccc;
+  border-radius: 25px;
+  font-size: 18px;
+  background: var(--item-bg);
+  color: var(--text);
+  transition: all 0.3s;
+}
+.input-container-bottom input::placeholder { color: #999; }
+.input-container-bottom input:focus { outline: none; border-color: var(--primary); }
+
+.input-container-bottom button {
+  padding: 18px 28px;
+  margin-left: 15px;
+  border: none;
+  border-radius: 25px;
+  cursor: pointer;
+  font-weight: 700;
+  color: #fff;
+  background: var(--primary);
+  transition: all 0.3s;
+}
+.input-container-bottom button:hover { transform: scale(1.05); background: var(--primary-hover); }
+
+/* + Add Task Button */
+#addWithBtn {
+  padding: 18px 22px;
+  margin-left: 10px;
+  border: none;
+  border-radius: 25px;
+  cursor: pointer;
+  font-weight: 700;
+  color: #fff;
+  background: var(--primary);
+  transition: all 0.3s;
+  position: relative;
+}
+#addWithBtn:hover { background: var(--primary-hover); transform: scale(1.05); }
+
+/* Add Task With Date menu above + */
+#addWithMenu {
+  display: none;
+  position: absolute;
+  bottom: 60px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--card);
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  padding: 8px 12px;
+  cursor: pointer;
+  z-index: 150;
+}
+#addWithMenu:hover { background: var(--item-hover); }
+
+/* DateTime Menu */
+#dateTimeMenu {
+  display: none;
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%) translateY(-10px);
+  background: var(--card);
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  padding: 12px;
+  z-index: 200;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+#dateTimeMenu input[type="datetime-local"] {
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 16px;
+}
+#setDateTimeBtn {
+  padding: 10px;
+  border: none;
+  border-radius: 8px;
+  background: var(--primary);
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+}
+#setDateTimeBtn:hover { background: var(--primary-hover); }
+
+/* Message Popup */
+#message {
+  position: fixed;
+  top: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: none;
+  opacity: 0;
+  color: var(--message-text);
+  background-color: var(--message-bg);
+  border: 1px solid var(--message-border);
+  padding: 12px 25px;
+  border-radius: 25px;
+  font-weight: 700;
+  text-align: center;
+  min-width: 200px;
+  z-index: 200;
+  transition: opacity 0.4s ease;
+}
+
+/* Animations */
+.task-enter { opacity: 0; transform: translateY(10px); background-color: var(--success-bg); }
+.task-exit { opacity: 0; transform: translateY(-10px); background-color: #f8d7da; }
 
 /* Edit Input */
 .edit-input {
@@ -295,9 +341,7 @@ body.dark .clear-btn:hover {
   box-sizing: border-box;
 }
 
-/* -------------------------
-   Hint Message
-------------------------- */
+/* Hint Message */
 .hint-message {
   position: fixed;
   bottom: 0;
@@ -313,55 +357,17 @@ body.dark .clear-btn:hover {
   font-style: italic;
 }
 
-/* -------------------------
-   Responsive
-------------------------- */
+/* Responsive */
 @media (max-width: 768px) {
-  .tasks-container {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 25px;
-    padding: 0 10px;
-  }
-
-  .task-column {
-    width: 100%;
-    border-radius: 20px;
-    box-shadow: 0 6px 14px rgba(0,0,0,0.12);
-  }
-
-  .task-column h2 {
-    font-size: 18px;
-    text-align: center;
-    margin-bottom: 20px;
-  }
-
-  .input-container-bottom {
-    flex-direction: column;
-    gap: 10px;
-    width: 95%;
-  }
-
-  .input-container-bottom button {
-    margin-left: 0;
-    width: 100%;
-  }
-
-  .input-container-bottom input {
-    font-size: 16px;
-    padding: 12px;
-  }
+  .tasks-container { flex-direction: column; align-items: stretch; gap: 25px; padding: 0 10px; }
+  .task-column { width: 100%; border-radius: 20px; box-shadow: 0 6px 14px rgba(0,0,0,0.12); }
+  .task-column h2 { font-size: 18px; text-align: center; margin-bottom: 20px; }
+  .input-container-bottom { flex-direction: column; gap: 10px; width: 95%; }
+  .input-container-bottom button { margin-left: 0; width: 100%; }
+  .input-container-bottom input { font-size: 16px; padding: 12px; }
 }
-
 @media (max-width: 480px) {
-  body {
-    font-size: 14px;
-  }
-  .task-column h2 {
-    font-size: 16px;
-  }
-  .task-column li {
-    font-size: 14px;
-    padding: 10px 12px;
-  }
+  body { font-size: 14px; }
+  .task-column h2 { font-size: 16px; }
+  .task-column li { font-size: 14px; padding: 10px 12px; }
 }

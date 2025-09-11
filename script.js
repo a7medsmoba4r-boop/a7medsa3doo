@@ -6,23 +6,42 @@ document.addEventListener("DOMContentLoaded", () => {
   const message = document.getElementById("message");
   const darkModeToggle = document.getElementById("darkModeToggle");
 
+  const addWithBtn = document.getElementById("addWithBtn");
+  const addWithMenu = document.getElementById("addWithMenu");
+  const dateTimeMenu = document.getElementById("dateTimeMenu");
+  const dateTimeInput = document.getElementById("dateTimeInput");
+  const setDateTimeBtn = document.getElementById("setDateTimeBtn");
+
+  let tempDateTime = null;
+
   // -----------------------
   // حفظ / تحميل من localStorage
   // -----------------------
   function saveTasks() {
-    const inProgress = Array.from(inprogressList.children).map(li => li.querySelector(".task-text").textContent);
-    const completed = Array.from(completedList.children).map(li => li.querySelector(".task-text").textContent);
+    const inProgress = Array.from(inprogressList.children).map(li => {
+      return {
+        text: li.querySelector(".task-text").textContent,
+        datetime: li.dataset.datetime || null
+      };
+    });
+    const completed = Array.from(completedList.children).map(li => {
+      return {
+        text: li.querySelector(".task-text").textContent,
+        datetime: li.dataset.datetime || null
+      };
+    });
     localStorage.setItem("tasks", JSON.stringify({ inProgress, completed }));
   }
 
   function loadTasks() {
     const saved = JSON.parse(localStorage.getItem("tasks") || "null");
     if (!saved) return;
-
-    // اضافة بدون مضاعفة الانيميشن غير الضروري
-    saved.inProgress?.forEach(text => inprogressList.appendChild(createTaskElement(text)));
-    saved.completed?.forEach(text => {
-      const li = createTaskElement(text);
+    saved.inProgress?.forEach(obj => {
+      const li = createTaskElement(obj.text, obj.datetime);
+      inprogressList.appendChild(li);
+    });
+    saved.completed?.forEach(obj => {
+      const li = createTaskElement(obj.text, obj.datetime);
       li.classList.add("completed");
       completedList.appendChild(li);
     });
@@ -31,137 +50,101 @@ document.addEventListener("DOMContentLoaded", () => {
   // -----------------------
   // إضافة تاسك
   // -----------------------
-  function addTask() {
-    const taskText = taskInput.value.trim();
+  function addTask(text = null, datetime = null) {
+    const taskText = text || taskInput.value.trim();
     if (taskText === "") return;
 
-    const li = createTaskElement(taskText);
+    if (tempDateTime && !datetime) datetime = tempDateTime;
 
-    // تشغيل أنيميشن دخول
+    const li = createTaskElement(taskText, datetime);
+
     li.classList.add("task-enter");
     inprogressList.appendChild(li);
     setTimeout(() => li.classList.remove("task-enter"), 400);
 
     taskInput.value = "";
+    tempDateTime = null;
     showMessage("Task added successfully!");
     saveTasks();
   }
 
   // -----------------------
-  // إنشاء عنصر تاسك (معدل: يدعم edit on click + dblclick لحالة المكتمل)
+  // إنشاء عنصر تاسك
   // -----------------------
-  function createTaskElement(text) {
+  function createTaskElement(text, datetime = null) {
     const li = document.createElement("li");
+    li.dataset.datetime = datetime || "";
 
     const span = document.createElement("span");
     span.className = "task-text";
     span.textContent = text;
 
+    if (datetime) {
+      const dtSpan = document.createElement("span");
+      dtSpan.textContent = ` ⏰ ${new Date(datetime).toLocaleString()}`;
+      dtSpan.style.fontSize = "13px";
+      dtSpan.style.marginLeft = "8px";
+      span.appendChild(dtSpan);
+    }
+
     const deleteBtn = document.createElement("button");
     deleteBtn.className = "delete-btn";
     deleteBtn.textContent = "✖";
 
-    // نستخدم متغير مؤقت لتفادي تعارض single click (edit) مع dblclick
-    let clickTimer = null;
+    const editBtn = document.createElement("button");
+    editBtn.className = "edit-btn";
+    editBtn.textContent = "✎";
 
-    // دبل كليك (نقل للمكتمل أو مسح لو انت بالفعل في المكتمل)
-    li.addEventListener("dblclick", () => {
-      // إلغاء أي حدث نقر ينتظر للتعديل
-      if (clickTimer) {
-        clearTimeout(clickTimer);
-        clickTimer = null;
-      }
-
-      if (li.parentElement.id === "inprogress-list") {
-        li.classList.add("completed");
-        completedList.appendChild(li);
-        showMessage("You do well!");
-        saveTasks();
-      } else if (li.parentElement.id === "completed-list") {
-        // أنيميشن خروج قبل المسح
-        li.classList.add("task-exit");
-        setTimeout(() => {
-          li.remove();
-          saveTasks();
-        }, 300);
-      }
+    deleteBtn.addEventListener("click", () => {
+      li.remove();
+      saveTasks();
     });
 
-    // Click on text => start edit (single click)
-    span.addEventListener("click", () => {
-      // ننتظر قليلًا للتأكد إنه مش dblclick
-      clickTimer = setTimeout(() => {
-        startEdit();
-        clickTimer = null;
-      }, 220);
+    editBtn.addEventListener("click", () => {
+      startEdit();
     });
 
     function startEdit() {
-      // لو فيه بالفعل input تحرير، متعملش تاني
       if (li.querySelector(".edit-input")) return;
 
       const input = document.createElement("input");
       input.type = "text";
       input.className = "edit-input";
       input.value = span.textContent;
-
       li.insertBefore(input, span);
       span.style.display = "none";
       input.focus();
 
-      // حفظ التعديل عند Enter أو blur
       function commitEdit() {
         const newText = input.value.trim();
-        if (newText !== "") {
-          span.textContent = newText;
-        }
+        if (newText !== "") span.textContent = newText;
         span.style.display = "";
         input.remove();
         saveTasks();
       }
 
       input.addEventListener("keypress", (e) => {
-        if (e.key === "Enter") {
-          commitEdit();
-        }
+        if (e.key === "Enter") commitEdit();
       });
       input.addEventListener("blur", commitEdit);
     }
 
-    // زرار X
-    deleteBtn.addEventListener("click", () => {
-      if (li.parentElement.id === "inprogress-list") {
-        // أنيميشن خروج
-        li.classList.add("task-exit");
-        setTimeout(() => {
-          li.remove();
-          saveTasks();
-        }, 300);
-      } else {
-        // في المكتمل: حسب شغلك الأصلي، الزرار يعيدها للـ In Progress
-        li.classList.remove("completed");
-        inprogressList.appendChild(li);
-        saveTasks();
-      }
-    });
-
     li.appendChild(span);
+    li.appendChild(editBtn);
     li.appendChild(deleteBtn);
 
     return li;
   }
 
   // -----------------------
-  // مسج نجاح (خفت بسيطة في الظهور بالـ opacity)
+  // مسج نجاح
   // -----------------------
   function showMessage(text) {
     message.textContent = text;
     message.style.display = "block";
-    // نفعل الـ opacity حتى يبان مع الانتقال في CSS
     message.style.opacity = "1";
     setTimeout(() => {
       message.style.opacity = "0";
-      // بعد انتهاء التحول نخفيه حقيقتًا
       setTimeout(() => {
         message.style.display = "none";
       }, 400);
@@ -169,7 +152,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // -----------------------
-  // زرارات Clear All
+  // Clear All
   // -----------------------
   function clearAll(listId) {
     const list = document.getElementById(listId);
@@ -178,29 +161,20 @@ document.addEventListener("DOMContentLoaded", () => {
       showMessage("No tasks to clear.");
       return;
     }
-
     items.forEach((li, idx) => {
       setTimeout(() => {
-        li.classList.add("task-exit");
-        setTimeout(() => {
-          li.remove();
-          // بعد آخر عنصر: احفظ واظهر مسج
-          if (idx === items.length - 1) {
-            saveTasks();
-            showMessage("All cleared.");
-          }
-        }, 300);
+        li.remove();
+        if (idx === items.length - 1) saveTasks();
       }, idx * 80);
     });
   }
 
-  // ربط أزرار Clear All
   document.querySelectorAll(".clear-btn").forEach(btn => {
     btn.addEventListener("click", () => clearAll(btn.dataset.target));
   });
 
   // -----------------------
-  // Dark Mode toggle + حفظ الاختيار
+  // Dark Mode toggle
   // -----------------------
   function applyDarkMode(enabled) {
     document.body.classList.toggle("dark", enabled);
@@ -208,26 +182,48 @@ document.addEventListener("DOMContentLoaded", () => {
     localStorage.setItem("darkMode", enabled ? "true" : "false");
   }
 
-  // تحميل حالة الداكن من localStorage
-  const darkPref = localStorage.getItem("darkMode") === "true";
-  applyDarkMode(darkPref);
+  applyDarkMode(localStorage.getItem("darkMode") === "true");
 
   darkModeToggle.addEventListener("click", () => {
-    const now = !document.body.classList.contains("dark");
-    applyDarkMode(now);
+    applyDarkMode(!document.body.classList.contains("dark"));
   });
 
   // -----------------------
-  // ربط أزرار وحدث Enter
+  // + Add Task With Date dropdown
   // -----------------------
-  addTaskBtn.addEventListener("click", addTask);
+  addWithBtn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    addWithMenu.style.display = addWithMenu.style.display === "block" ? "none" : "block";
+  });
 
-  taskInput.addEventListener("keypress", (e) => {
-    if (e.key === "Enter") {
-      addTask();
+  addWithMenu.addEventListener("click", (e) => {
+    e.stopPropagation();
+    addWithMenu.style.display = "none";
+    dateTimeMenu.style.display = "flex";
+    dateTimeInput.focus();
+  });
+
+  setDateTimeBtn.addEventListener("click", () => {
+    if (!dateTimeInput.value) {
+      showMessage("Please set a date & time!");
+      return;
     }
+    tempDateTime = dateTimeInput.value;
+    dateTimeMenu.style.display = "none";
+    taskInput.focus();
   });
 
-  // تحميل البيانات من localStorage عند الفتح
+  // Close menus on outside click
+  document.addEventListener("click", () => {
+    addWithMenu.style.display = "none";
+    dateTimeMenu.style.display = "none";
+  });
+
+  // -----------------------
+  // Add task events
+  // -----------------------
+  addTaskBtn.addEventListener("click", () => addTask());
+  taskInput.addEventListener("keypress", (e) => { if (e.key === "Enter") addTask(); });
+
   loadTasks();
 });
