@@ -1,7 +1,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
 
-/* CSS variables (لتسهيل الـ Dark Mode) */
-:root{
+/* -------------------------
+   Variables (Light Mode)
+------------------------- */
+:root {
   --bg: #f4f6f7;
   --card: #ffffff;
   --text: #333333;
@@ -19,8 +21,10 @@
   --message-border: #c3e6cb;
 }
 
-/* Dark theme overrides */
-body.dark{
+/* -------------------------
+   Dark Mode Overrides
+------------------------- */
+body.dark {
   --bg: #071227;
   --card: #0b1220;
   --text: #e6eef8;
@@ -38,6 +42,9 @@ body.dark{
   --message-border: #113b26;
 }
 
+/* -------------------------
+   Base Styles
+------------------------- */
 body {
   font-family: 'Inter', sans-serif;
   margin: 0;
@@ -45,14 +52,15 @@ body {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
   align-items: center;
   background: var(--bg);
   color: var(--text);
   transition: background 0.25s ease, color 0.25s ease;
 }
 
-/* الأزرار فوق */
+/* -------------------------
+   Top Buttons
+------------------------- */
 .top-buttons {
   position: absolute;
   top: 20px;
@@ -75,17 +83,16 @@ body {
   transform: scale(1.05);
 }
 
-/* ✅ ايموجي الدارك/لايت */
+/* Dark/Light Toggle */
 #darkModeToggle {
   cursor: pointer;
   font-size: 20px;
-  line-height: 1;
-  background: none;
-  border: none;
-  padding: 0;
+  margin-left: 10px;
 }
 
-/* Container الأعمدة */
+/* -------------------------
+   Tasks Container
+------------------------- */
 .tasks-container {
   display: flex;
   justify-content: center;
@@ -93,10 +100,9 @@ body {
   margin-top: 100px;
   width: 100%;
   max-width: 1000px;
-  flex-wrap: wrap; /* عشان الموبايل */
+  flex-wrap: wrap;
 }
 
-/* Column واحد */
 .task-column {
   flex: 1;
   min-height: 300px;
@@ -106,11 +112,10 @@ body {
   box-shadow: 0 4px 10px rgba(0,0,0,0.08);
   border: 1px solid #ddd;
   transition: background 0.25s ease;
-  min-width: 300px;  /* للموبايل */
+  min-width: 300px;
   max-width: 100%;
 }
 
-/* العنوان */
 .task-column h2 {
   font-size: 18px;
   font-weight: 700;
@@ -120,13 +125,12 @@ body {
   padding-bottom: 8px;
 }
 
-/* ليست التاسكات */
+/* Task List Items */
 .task-column ul {
   list-style: none;
   margin: 0;
   padding: 0;
 }
-
 .task-column li {
   display: flex;
   align-items: center;
@@ -137,23 +141,22 @@ body {
   border: 1px solid #e0e0e0;
   transition: background 0.3s, transform 0.3s, opacity 0.3s;
 }
-
 .task-column li:hover {
   background: var(--item-hover);
 }
-
 .task-column li span {
   flex-grow: 1;
 }
-
 .task-column li.completed {
   text-decoration: line-through;
   color: #888;
   opacity: 0.7;
 }
 
-/* زرار Clear All */
-.clear-btn{
+/* -------------------------
+   Clear All Button
+------------------------- */
+.clear-btn {
   margin-top: 12px;
   padding: 8px 12px;
   border-radius: 10px;
@@ -164,9 +167,8 @@ body {
   font-size: 13px;
   transition: transform .15s;
 }
-.clear-btn:hover{ transform: scale(1.03); }
+.clear-btn:hover { transform: scale(1.03); }
 
-/* ✅ تعديل للـ Dark Mode */
 body.dark .clear-btn {
   color: #e6eef8;
   border: 1px solid #445;
@@ -176,7 +178,9 @@ body.dark .clear-btn:hover {
   background: #1b2a45;
 }
 
-/* الإدخال أسفل */
+/* -------------------------
+   Input Bottom
+------------------------- */
 .input-container-bottom {
   position: fixed;
   bottom: 20px;
@@ -184,13 +188,12 @@ body.dark .clear-btn:hover {
   transform: translateX(-50%);
   display: flex;
   align-items: center;
-  width: 90%;          /* للموبايل */
-  max-width: 720px;    /* للاب */
+  width: 90%;
+  max-width: 720px;
   justify-content: center;
   z-index: 100;
   background: transparent;
 }
-
 .input-container-bottom input {
   padding: 18px;
   flex-grow: 1;
@@ -202,8 +205,10 @@ body.dark .clear-btn:hover {
   transition: all 0.3s;
 }
 .input-container-bottom input::placeholder { color: #999; }
-.input-container-bottom input:focus { outline: none; border-color: var(--primary); }
-
+.input-container-bottom input:focus {
+  outline: none;
+  border-color: var(--primary);
+}
 .input-container-bottom button {
   padding: 18px 28px;
   margin-left: 15px;
@@ -220,7 +225,9 @@ body.dark .clear-btn:hover {
   background: var(--primary-hover);
 }
 
-/* المسج (ثابت) */
+/* -------------------------
+   Message Popup
+------------------------- */
 #message {
   position: fixed;
   top: 80px;
@@ -240,7 +247,9 @@ body.dark .clear-btn:hover {
   transition: opacity 0.4s ease;
 }
 
-/* زرار X */
+/* -------------------------
+   Delete Button
+------------------------- */
 .delete-btn {
   background-color: var(--danger);
   color: #fff;
@@ -257,9 +266,14 @@ body.dark .clear-btn:hover {
   margin-left: 6px;
   transition: all 0.2s;
 }
-.delete-btn:hover { background-color: var(--danger-hover); transform: scale(1.1); }
+.delete-btn:hover {
+  background-color: var(--danger-hover);
+  transform: scale(1.1);
+}
 
-/* Animation for tasks */
+/* -------------------------
+   Animations
+------------------------- */
 .task-enter {
   opacity: 0;
   transform: translateY(10px);
@@ -271,8 +285,8 @@ body.dark .clear-btn:hover {
   background-color: #f8d7da;
 }
 
-/* Input used for editing */
-.edit-input{
+/* Edit Input */
+.edit-input {
   padding: 8px 10px;
   border-radius: 8px;
   border: 1px solid #ccc;
@@ -281,7 +295,9 @@ body.dark .clear-btn:hover {
   box-sizing: border-box;
 }
 
-/* Hint ثابتة تحت صندوق الإدخال */
+/* -------------------------
+   Hint Message
+------------------------- */
 .hint-message {
   position: fixed;
   bottom: 0;
@@ -297,21 +313,31 @@ body.dark .clear-btn:hover {
   font-style: italic;
 }
 
-/* ✅ Media Queries لتظبيط الموبايل */
+/* -------------------------
+   Responsive
+------------------------- */
 @media (max-width: 768px) {
   .tasks-container {
-    flex-direction: column; /* الأعمدة فوق بعض */
-    align-items: center;
-    gap: 20px;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 25px;
+    padding: 0 10px;
   }
 
   .task-column {
-    width: 90%;
-    max-width: 400px;
+    width: 100%;
+    border-radius: 20px;
+    box-shadow: 0 6px 14px rgba(0,0,0,0.12);
+  }
+
+  .task-column h2 {
+    font-size: 18px;
+    text-align: center;
+    margin-bottom: 20px;
   }
 
   .input-container-bottom {
-    flex-direction: column; /* الانبوت فوق الزرار */
+    flex-direction: column;
     gap: 10px;
     width: 95%;
   }
