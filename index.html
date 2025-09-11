@@ -1,18 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>To-Do App</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-
   <!-- الأزرار فوق -->
   <div class="top-buttons">
     <button class="top-btn">Home</button>
     <button class="top-btn">About</button>
     <button class="top-btn">Contact</button>
+    <!-- ايموجي Dark/Light -->
+    <span id="darkModeToggle" title="Toggle dark mode">🌙</span>
   </div>
 
   <!-- الأعمدة الجديدة -->
@@ -23,6 +24,7 @@
       <ul id="inprogress-list">
         <!-- Tasks هنا -->
       </ul>
+      <button class="clear-btn" data-target="inprogress-list">Clear All</button>
     </div>
 
     <!-- Completed -->
@@ -31,6 +33,7 @@
       <ul id="completed-list">
         <!-- Tasks هنا -->
       </ul>
+      <button class="clear-btn" data-target="completed-list">Clear All</button>
     </div>
   </div>
 
@@ -39,11 +42,12 @@
     <input type="text" id="taskInput" placeholder="Enter your task...">
     <button id="addTaskBtn">Add</button>
   </div>
-<div class="hint-message">
-  Double click on the task if you completed it.
-</div>
 
-<p class="hint-message">Double click on the task if you completed it.</p>
+  <div class="hint-message">
+    Double click on the task if you completed it.
+  </div>
+
+  <p class="hint-message">Double click on the task if you completed it.</p>
 
   <!-- مسج -->
   <div id="message"></div>
