@@ -75,7 +75,7 @@ body {
   transform: scale(1.05);
 }
 
-/* ايموجي الدارك/لايت */
+/* ✅ ايموجي الدارك/لايت */
 #darkModeToggle {
   cursor: pointer;
   font-size: 20px;
@@ -295,4 +295,47 @@ body.dark .clear-btn:hover {
   width: 100%;
   pointer-events: none;
   font-style: italic;
+}
+
+/* ✅ Media Queries لتظبيط الموبايل */
+@media (max-width: 768px) {
+  .tasks-container {
+    flex-direction: column; /* الأعمدة فوق بعض */
+    align-items: center;
+    gap: 20px;
+  }
+
+  .task-column {
+    width: 90%;
+    max-width: 400px;
+  }
+
+  .input-container-bottom {
+    flex-direction: column; /* الانبوت فوق الزرار */
+    gap: 10px;
+    width: 95%;
+  }
+
+  .input-container-bottom button {
+    margin-left: 0;
+    width: 100%;
+  }
+
+  .input-container-bottom input {
+    font-size: 16px;
+    padding: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  body {
+    font-size: 14px;
+  }
+  .task-column h2 {
+    font-size: 16px;
+  }
+  .task-column li {
+    font-size: 14px;
+    padding: 10px 12px;
+  }
 }
