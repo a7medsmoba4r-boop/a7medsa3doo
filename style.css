@@ -1,373 +1,276 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
 
-/* -------------------------
-   Variables (Light Mode)
-------------------------- */
-:root {
+:root{
   --bg: #f4f6f7;
   --card: #ffffff;
-  --text: #333333;
+  --text: #222;
   --primary: #2ecc71;
   --primary-hover: #27ae60;
   --item-bg: #f9f9f9;
   --item-hover: #eefaf6;
-  --success-bg: #d4edda;
-  --success-border: #c3e6cb;
   --danger: #e74c3c;
-  --danger-hover: #c0392b;
-  --hint: #777777;
-  --message-text: #27ae60;
-  --message-bg: #d4edda;
-  --message-border: #c3e6cb;
+  --input-border: #ccc;
+  --clear-btn: #333;
 }
 
-/* Dark Mode Overrides */
-body.dark {
-  --bg: #071227;
-  --card: #0b1220;
-  --text: #e6eef8;
-  --primary: #2ecc71;
-  --primary-hover: #27ae60;
-  --item-bg: #071a2a;
-  --item-hover: #082532;
-  --success-bg: #08321f;
-  --success-border: #08321f;
-  --danger: #8b2b2b;
-  --danger-hover: #7a2424;
-  --hint: #9aa7b4;
-  --message-text: #9be6a6;
-  --message-bg: #08321f;
-  --message-border: #113b26;
+/* ====== Dark Mode Fixes ====== */
+body.dark{
+  --bg: #121212;
+  --card: #1e1e1e;
+  --text: #eaeaea;
+  --item-bg: #222;
+  --item-hover: #2b2b2b;
+  --danger: #ff6b6b;
+  --input-border: #555;
+  --clear-btn: #eaeaea;
 }
 
-/* Base Styles */
-body {
+/* Base */
+*{box-sizing:border-box}
+body{
   font-family: 'Inter', sans-serif;
-  margin: 0;
-  padding: 20px;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  background: var(--bg);
-  color: var(--text);
-  transition: background 0.25s ease, color 0.25s ease;
+  margin:0;
+  padding:20px;
+  min-height:100vh;
+  background:var(--bg);
+  color:var(--text);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  transition:background .22s,color .22s;
+  direction: ltr;
 }
 
-/* Top Buttons */
-.top-buttons {
-  position: absolute;
-  top: 20px;
-  left: 20px;
-  display: flex;
-  gap: 12px;
+/* top buttons */
+.top-buttons{
+  position:absolute;
+  top:18px;
+  left:18px;
+  display:flex;
+  gap:10px;
+  align-items:center;
 }
-.top-btn {
-  padding: 10px 18px;
-  border: none;
-  border-radius: 20px;
-  background: var(--primary);
+.top-btn{
+  padding:8px 14px;
+  border-radius:14px;
+  border:none;
+  background:var(--primary);
+  color:white;
+  font-weight:600;
+  cursor:pointer;
+}
+.top-btn:hover{background:var(--primary-hover)}
+#darkModeToggle{cursor:pointer;margin-left:10px; user-select:none}
+
+/* tasks container */
+.tasks-container{
+  display:flex;
+  gap:24px;
+  margin-top:80px;
+  width:100%;
+  max-width:1000px;
+  flex-wrap:wrap;
+  padding: 0 12px;
+}
+.task-column{
+  flex:1;
+  min-width:300px;
+  background:var(--card);
+  padding:18px;
+  border-radius:14px;
+  box-shadow:0 6px 18px rgba(0,0,0,0.06);
+  border:1px solid rgba(0,0,0,0.06);
+}
+.task-column h2{margin:0 0 12px 0;font-size:18px}
+
+/* lists */
+.task-column ul{list-style:none;margin:0;padding:0}
+.task-column li{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:12px;
+  margin-bottom:10px;
+  background:var(--item-bg);
+  border-radius:12px;
+  border:1px solid rgba(0,0,0,0.04);
+  transition:background .15s,transform .12s;
+}
+.task-column li:hover{background:var(--item-hover); transform:translateY(-2px)}
+
+/* task text takes available space */
+.task-text{flex:1; font-weight:600; font-size:15px;}
+
+/* datetime badge uses variables */
+.datetime-badge{
+  font-size:13px;
+  font-weight:700;
+  color:var(--text);
+  background:var(--card);
+  border:1px solid rgba(255,255,255,0.08);
+  padding:4px 8px;
+  border-radius:8px;
+  min-width:60px;
+  text-align:center;
+}
+
+.datetime-badge.soon{
+  background: #b85b00;
   color: #fff;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s;
 }
-.top-btn:hover {
-  background: var(--primary-hover);
-  transform: scale(1.05);
+.datetime-badge.expired{
+  background: #a70000;
+  color:#fff;
+}
+/* actions (edit/delete) */
+.task-actions{ display:flex; gap:8px; align-items:center }
+.task-actions button{
+  width:36px; height:36px;
+  border-radius:10px;
+  border:none;
+  cursor:pointer;
+  font-weight:700;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+}
+.edit-btn{ background:var(--primary); color:#fff; }
+.delete-btn{ background:var(--danger); color:#fff; }
+
+/* clear btn */
+.clear-btn{
+  margin-top:10px;
+  padding:8px 12px;
+  border-radius:8px;
+  border:none;
+  background:transparent;
+  font-weight:700;
+  cursor:pointer;
+  color: var(--clear-btn);
 }
 
-/* Dark/Light Toggle */
-#darkModeToggle {
-  cursor: pointer;
-  font-size: 20px;
-  margin-left: 10px;
+/* input bottom */
+.input-container-bottom{
+  position:fixed;
+  bottom:20px;
+  left:50%;
+  transform:translateX(-50%);
+  width:90%;
+  max-width:760px;
+  display:flex;
+  align-items:center;
+  gap:10px;
+  z-index:120;
+  padding:10px;
+}
+.input-container-bottom input{
+  padding:14px;
+  border-radius:24px;
+  border:1px solid var(--input-border);
+  flex:1;
+  font-size:16px;
+  background:var(--item-bg);
+  color:var(--text);
+}
+#addTaskBtn{
+  padding:12px 18px;
+  border-radius:22px;
+  border:none;
+  background:var(--primary);
+  color:#fff;
+  font-weight:800;
+  cursor:pointer;
+}
+#addTaskBtn:hover{ background:var(--primary-hover) }
+
+/* add-with wrapper */
+.add-with-wrapper{ position:relative; display:inline-block; width:auto; }
+
+/* + as text (no border) */
+#plusBtn{
+  display:inline-block;
+  font-size:26px;
+  font-weight:800;
+  cursor:pointer;
+  user-select:none;
+  padding:6px 8px;
+  color:var(--primary);
+  transition:transform .15s ease;
+}
+#plusBtn:hover{ transform:scale(1.15) }
+
+/* menu cards (appear above the +) */
+/* default: hidden + small slide animation */
+.menu-card{
+  position:absolute;
+  right:0;
+  bottom:calc(100% + 8px);
+  background:var(--card);
+  padding:10px;
+  border-radius:10px;
+  box-shadow:0 8px 22px rgba(0,0,0,0.12);
+  z-index:250;
+  min-width:200px;
+  opacity:0;
+  transform: translateY(8px) scaleY(0.98);
+  transform-origin: bottom right;
+  pointer-events:none;
+  transition: opacity .18s ease, transform .18s ease;
 }
 
-/* Tasks Container */
-.tasks-container {
-  display: flex;
-  justify-content: center;
-  gap: 30px;
-  margin-top: 100px;
-  width: 100%;
-  max-width: 1000px;
-  flex-wrap: wrap;
+/* when visible */
+.menu-card.visible{
+  opacity:1;
+  transform: translateY(0) scaleY(1);
+  pointer-events:auto;
 }
 
-.task-column {
-  flex: 1;
-  min-height: 300px;
-  background: var(--card);
-  padding: 20px;
-  border-radius: 16px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.08);
-  border: 1px solid #ddd;
-  transition: background 0.25s ease;
-  min-width: 300px;
-  max-width: 100%;
+/* the date picker menu should sit a bit higher to avoid overlap */
+#dateTimeMenu{ bottom: calc(100% + 64px); }
+
+/* menu contents */
+.menu-action{
+  width:100%;
+  text-align:center;
+  background:transparent;
+  border:none;
+  padding:8px 6px;
+  cursor:pointer;
+  font-weight:700;
+  border-radius:6px;
+}
+.menu-action:hover{ background:var(--item-hover) }
+
+#dateTimeMenu label{display:block;margin-bottom:6px;font-weight:700}
+/* date/time input inside menu */
+#dateTimeMenu input{
+  width:100%;
+  padding:8px;
+  border-radius:8px;
+  border:1px solid #666;
+  background:var(--item-bg);
+  color:var(--text);
+}
+#dateTimeMenu button{ width:100%; padding:8px;border-radius:8px;border:none;background:var(--primary);color:#fff;cursor:pointer}
+
+/* message */
+#message{
+  position:fixed;
+  top:80px;
+  left:50%;
+  transform:translateX(-50%);
+  padding:10px 16px;
+  border-radius:18px;
+  background:#eaf7ee;
+  color:#1b8a4b;
+  font-weight:800;
+  display:none;
 }
 
-.task-column h2 {
-  font-size: 18px;
-  font-weight: 700;
-  color: var(--text);
-  margin-bottom: 15px;
-  border-bottom: 2px solid #eee;
-  padding-bottom: 8px;
-}
-
-/* Task List Items */
-.task-column ul {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-.task-column li {
-  display: flex;
-  align-items: center;
-  background: var(--item-bg);
-  margin-bottom: 10px;
-  padding: 12px 15px;
-  border-radius: 12px;
-  border: 1px solid #e0e0e0;
-  transition: background 0.3s, transform 0.3s, opacity 0.3s;
-}
-.task-column li:hover { background: var(--item-hover); }
-.task-column li span { flex-grow: 1; }
-.task-column li.completed { text-decoration: line-through; color: #888; opacity: 0.7; }
-
-/* Delete Button */
-.delete-btn {
-  background-color: var(--danger);
-  color: #fff;
-  border: none;
-  border-radius: 14px;
-  width: 36px;
-  height: 36px;
-  cursor: pointer;
-  font-weight: bold;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 16px;
-  margin-left: 6px;
-  transition: all 0.2s;
-}
-.delete-btn:hover {
-  background-color: var(--danger-hover);
-  transform: scale(1.1);
-}
-
-/* Edit Button */
-.edit-btn {
-  background-color: var(--primary);
-  color: #fff;
-  border: none;
-  border-radius: 14px;
-  width: 36px;
-  height: 36px;
-  cursor: pointer;
-  font-weight: bold;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 16px;
-  margin-left: 6px;
-  transition: all 0.2s;
-}
-.edit-btn:hover {
-  background-color: var(--primary-hover);
-  transform: scale(1.1);
-}
-
-/* Clear All Button */
-.clear-btn {
-  margin-top: 12px;
-  padding: 8px 12px;
-  border-radius: 10px;
-  border: 1px solid rgba(0,0,0,0.06);
-  background: transparent;
-  cursor: pointer;
-  font-weight: 700;
-  font-size: 13px;
-  transition: transform .15s;
-}
-.clear-btn:hover { transform: scale(1.03); }
-
-body.dark .clear-btn {
-  color: #e6eef8;
-  border: 1px solid #445;
-  background: #0f1a2f;
-}
-body.dark .clear-btn:hover { background: #1b2a45; }
-
-/* Input Bottom */
-.input-container-bottom {
-  position: fixed;
-  bottom: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  display: flex;
-  align-items: center;
-  width: 90%;
-  max-width: 720px;
-  justify-content: center;
-  z-index: 100;
-  background: transparent;
-}
-
-.input-container-bottom input {
-  padding: 18px;
-  flex-grow: 1;
-  border: 1px solid #ccc;
-  border-radius: 25px;
-  font-size: 18px;
-  background: var(--item-bg);
-  color: var(--text);
-  transition: all 0.3s;
-}
-.input-container-bottom input::placeholder { color: #999; }
-.input-container-bottom input:focus { outline: none; border-color: var(--primary); }
-
-.input-container-bottom button {
-  padding: 18px 28px;
-  margin-left: 15px;
-  border: none;
-  border-radius: 25px;
-  cursor: pointer;
-  font-weight: 700;
-  color: #fff;
-  background: var(--primary);
-  transition: all 0.3s;
-}
-.input-container-bottom button:hover { transform: scale(1.05); background: var(--primary-hover); }
-
-/* + Add Task Button */
-#addWithBtn {
-  padding: 18px 22px;
-  margin-left: 10px;
-  border: none;
-  border-radius: 25px;
-  cursor: pointer;
-  font-weight: 700;
-  color: #fff;
-  background: var(--primary);
-  transition: all 0.3s;
-  position: relative;
-}
-#addWithBtn:hover { background: var(--primary-hover); transform: scale(1.05); }
-
-/* Add Task With Date menu above + */
-#addWithMenu {
-  display: none;
-  position: absolute;
-  bottom: 60px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: var(--card);
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-  padding: 8px 12px;
-  cursor: pointer;
-  z-index: 150;
-}
-#addWithMenu:hover { background: var(--item-hover); }
-
-/* DateTime Menu */
-#dateTimeMenu {
-  display: none;
-  position: absolute;
-  bottom: 100%;
-  left: 50%;
-  transform: translateX(-50%) translateY(-10px);
-  background: var(--card);
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-  padding: 12px;
-  z-index: 200;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-#dateTimeMenu input[type="datetime-local"] {
-  padding: 8px 10px;
-  border-radius: 8px;
-  border: 1px solid #ccc;
-  font-size: 16px;
-}
-#setDateTimeBtn {
-  padding: 10px;
-  border: none;
-  border-radius: 8px;
-  background: var(--primary);
-  color: #fff;
-  font-weight: 600;
-  cursor: pointer;
-}
-#setDateTimeBtn:hover { background: var(--primary-hover); }
-
-/* Message Popup */
-#message {
-  position: fixed;
-  top: 80px;
-  left: 50%;
-  transform: translateX(-50%);
-  display: none;
-  opacity: 0;
-  color: var(--message-text);
-  background-color: var(--message-bg);
-  border: 1px solid var(--message-border);
-  padding: 12px 25px;
-  border-radius: 25px;
-  font-weight: 700;
-  text-align: center;
-  min-width: 200px;
-  z-index: 200;
-  transition: opacity 0.4s ease;
-}
-
-/* Animations */
-.task-enter { opacity: 0; transform: translateY(10px); background-color: var(--success-bg); }
-.task-exit { opacity: 0; transform: translateY(-10px); background-color: #f8d7da; }
-
-/* Edit Input */
-.edit-input {
-  padding: 8px 10px;
-  border-radius: 8px;
-  border: 1px solid #ccc;
-  font-size: 16px;
-  width: 100%;
-  box-sizing: border-box;
-}
-
-/* Hint Message */
-.hint-message {
-  position: fixed;
-  bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  font-size: 14px;
-  color: var(--hint);
-  background: transparent;
-  padding: 6px 0;
-  text-align: center;
-  width: 100%;
-  pointer-events: none;
-  font-style: italic;
-}
-
-/* Responsive */
-@media (max-width: 768px) {
-  .tasks-container { flex-direction: column; align-items: stretch; gap: 25px; padding: 0 10px; }
-  .task-column { width: 100%; border-radius: 20px; box-shadow: 0 6px 14px rgba(0,0,0,0.12); }
-  .task-column h2 { font-size: 18px; text-align: center; margin-bottom: 20px; }
-  .input-container-bottom { flex-direction: column; gap: 10px; width: 95%; }
-  .input-container-bottom button { margin-left: 0; width: 100%; }
-  .input-container-bottom input { font-size: 16px; padding: 12px; }
-}
-@media (max-width: 480px) {
-  body { font-size: 14px; }
-  .task-column h2 { font-size: 16px; }
-  .task-column li { font-size: 14px; padding: 10px 12px; }
+/* responsiveness */
+@media (max-width:720px){
+  .tasks-container{ flex-direction:column; padding:0 12px }
+  .input-container-bottom{ flex-direction:column; padding:12px; gap:8px; width:96%; }
+  .menu-card{ right:8px; left:auto; bottom:calc(100% + 10px) }
+  #dateTimeMenu{ bottom:calc(100% + 120px) }
 }

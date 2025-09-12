@@ -1,14 +1,13 @@
-<!DOCTYPE html> 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" dir="ltr">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>To-Do App</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <!-- Top Buttons -->
+  <!-- Top -->
   <div class="top-buttons">
     <button class="top-btn">Home</button>
     <button class="top-btn">About</button>
@@ -16,7 +15,7 @@
     <span id="darkModeToggle" title="Toggle dark mode">🌙</span>
   </div>
 
-  <!-- Tasks Container -->
+  <!-- Tasks -->
   <div class="tasks-container">
     <div class="task-column">
       <h2>In Progress</h2>
@@ -31,25 +30,31 @@
     </div>
   </div>
 
-  <!-- Input Container -->
+  <!-- Input bottom -->
   <div class="input-container-bottom">
-    <input type="text" id="taskInput" placeholder="Enter your task...">
+    <input type="text" id="taskInput" placeholder="Add a task..." />
     <button id="addTaskBtn">Add</button>
-    <button id="addWithBtn">+</button>
+
+    <div class="add-with-wrapper" aria-haspopup="true">
+      <!-- + as plain text -->
+      <span id="plusBtn" role="button" aria-label="More">+</span>
+
+      <!-- small menu above the + -->
+      <div id="addWithMenu" class="menu-card" aria-hidden="true">
+        <button id="addWithDate" class="menu-action">Add Task With Date</button>
+      </div>
+
+      <!-- date/time panel (appears above the small menu) -->
+      <div id="dateTimeMenu" class="menu-card" aria-hidden="true">
+        <label for="dateTimeInput">Pick date &amp; time</label>
+        <input type="datetime-local" id="dateTimeInput" />
+        <button id="setDateTimeBtn">Set</button>
+      </div>
+    </div>
   </div>
 
-  <!-- Add Task With Date Menu -->
-  <div id="addWithMenu" class="hidden">
-    <button id="addTaskWithDateBtn">Add Task With Date</button>
-  </div>
-
-  <div id="dateTimeMenu" class="hidden">
-    <input type="datetime-local" id="taskDateTime">
-    <button id="setDateTimeBtn">Set</button>
-  </div>
-
-  <!-- Message -->
-  <div id="message"></div>
+  <!-- message -->
+  <div id="message" role="status" aria-live="polite"></div>
 
   <script src="script.js"></script>
 </body>
