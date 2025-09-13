@@ -21,18 +21,14 @@ document.addEventListener("DOMContentLoaded", () => {
   // save/load tasks
   // -----------------------
   function saveTasks() {
-    const inProgress = Array.from(inprogressList.children).map(li => {
-      return {
-        text: li.querySelector(".task-text").textContent,
-        datetime: li.dataset.datetime || null
-      };
-    });
-    const completed = Array.from(completedList.children).map(li => {
-      return {
-        text: li.querySelector(".task-text").textContent,
-        datetime: li.dataset.datetime || null
-      };
-    });
+    const inProgress = Array.from(inprogressList.children).map(li => ({
+      text: li.querySelector(".task-text").textContent,
+      datetime: li.dataset.datetime || null
+    }));
+    const completed = Array.from(completedList.children).map(li => ({
+      text: li.querySelector(".task-text").textContent,
+      datetime: li.dataset.datetime || null
+    }));
     localStorage.setItem("tasks", JSON.stringify({ inProgress, completed }));
   }
 
@@ -48,8 +44,6 @@ document.addEventListener("DOMContentLoaded", () => {
       li.classList.add("completed");
       completedList.appendChild(li);
     });
-
-    // after loading existing items, attach drag handlers and initialize placeholder listeners
     initListsForDrag();
   }
 
@@ -59,11 +53,9 @@ document.addEventListener("DOMContentLoaded", () => {
   function addTask(text = null, datetime = null) {
     const taskText = text || taskInput.value.trim();
     if (taskText === "") return;
-
     if (tempDateTime && !datetime) datetime = tempDateTime;
 
     const li = createTaskElement(taskText, datetime);
-    // insert at top
     inprogressList.insertBefore(li, inprogressList.firstChild);
 
     taskInput.value = "";
@@ -80,12 +72,10 @@ document.addEventListener("DOMContentLoaded", () => {
     li.classList.add("task");
     li.dataset.datetime = datetime || "";
 
-    // main text
     const span = document.createElement("span");
     span.className = "task-text";
     span.textContent = text;
 
-    // actions (edit / delete)
     const actions = document.createElement("div");
     actions.className = "task-actions";
 
@@ -100,15 +90,13 @@ document.addEventListener("DOMContentLoaded", () => {
     actions.appendChild(editBtn);
     actions.appendChild(deleteBtn);
 
-    // append text first
     li.appendChild(span);
 
-    // if there's a datetime -> create badge and place BEFORE actions
     let timer = null;
     if (datetime) {
       const badge = document.createElement("span");
       badge.className = "datetime-badge";
-      li.appendChild(badge); // placed after text
+      li.appendChild(badge);
 
       function updateCountdown() {
         const now = Date.now();
@@ -118,49 +106,35 @@ document.addEventListener("DOMContentLoaded", () => {
         if (isNaN(target)) {
           badge.textContent = "Invalid date";
           badge.classList.add("expired");
-          if (timer) clearInterval(timer);
+          clearInterval(timer);
           return;
         }
-
         if (diff <= 0) {
           badge.textContent = "⏰ Ended";
-          badge.classList.remove("soon");
           badge.classList.add("expired");
           clearInterval(timer);
           return;
         }
 
-        // compute H M S
-        const hours = Math.floor(diff / (1000 * 60 * 60));
-        const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-        const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+        const hours = Math.floor(diff / 3600000);
+        const minutes = Math.floor((diff % 3600000) / 60000);
+        const seconds = Math.floor((diff % 60000) / 1000);
 
-        // style near end (< 5 minutes)
-        if (diff <= 5 * 60 * 1000) {
-          badge.classList.add("soon");
-        } else {
-          badge.classList.remove("soon");
-        }
+        if (diff <= 5 * 60 * 1000) badge.classList.add("soon");
+        else badge.classList.remove("soon");
 
-        if (hours > 0) {
-          badge.textContent = `${hours}h ${minutes}m`;
-        } else if (minutes > 0) {
-          badge.textContent = `${minutes}m ${seconds}s`;
-        } else {
-          badge.textContent = `${seconds}s`;
-        }
+        if (hours > 0) badge.textContent = `${hours}h ${minutes}m`;
+        else if (minutes > 0) badge.textContent = `${minutes}m ${seconds}s`;
+        else badge.textContent = `${seconds}s`;
       }
 
       updateCountdown();
       timer = setInterval(updateCountdown, 1000);
-      // keep ref so we can clear when deleting
       li._timer = timer;
     }
 
-    // append actions to li (after badge)
     li.appendChild(actions);
 
-    // delete
     deleteBtn.addEventListener("click", (e) => {
       e.stopPropagation();
       if (li._timer) clearInterval(li._timer);
@@ -168,7 +142,6 @@ document.addEventListener("DOMContentLoaded", () => {
       saveTasks();
     });
 
-    // edit inline
     editBtn.addEventListener("click", (e) => {
       e.stopPropagation();
       if (li.querySelector(".edit-input")) return;
@@ -189,13 +162,10 @@ document.addEventListener("DOMContentLoaded", () => {
         saveTasks();
       }
 
-      input.addEventListener("keypress", (ev) => {
-        if (ev.key === "Enter") commitEdit();
-      });
+      input.addEventListener("keypress", ev => { if (ev.key === "Enter") commitEdit(); });
       input.addEventListener("blur", commitEdit);
     });
 
-    // double click to toggle complete (keeps datetime)
     li.addEventListener("dblclick", () => {
       if (!li.classList.contains("completed")) {
         li.classList.add("completed");
@@ -207,8 +177,8 @@ document.addEventListener("DOMContentLoaded", () => {
       saveTasks();
     });
 
-    // attach drag handlers for this li (so new items are draggable)
     attachDragHandlers(li);
+    attachTouchHandlers(li);
 
     return li;
   }
@@ -222,9 +192,7 @@ document.addEventListener("DOMContentLoaded", () => {
     message.style.opacity = "1";
     setTimeout(() => {
       message.style.opacity = "0";
-      setTimeout(() => {
-        message.style.display = "none";
-      }, 400);
+      setTimeout(() => { message.style.display = "none"; }, 400);
     }, 1400);
   }
 
@@ -266,34 +234,25 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   // -----------------------
-  // Add-with: menu behavior (plus text toggles small menu above it)
+  // Add-with: menus
   // -----------------------
   function closeMenus() {
     addWithMenu.classList.remove("visible");
     dateTimeMenu.classList.remove("visible");
-    addWithMenu.setAttribute("aria-hidden", "true");
-    dateTimeMenu.setAttribute("aria-hidden", "true");
   }
 
   plusBtn.addEventListener("click", (e) => {
     e.stopPropagation();
     addWithMenu.classList.toggle("visible");
     dateTimeMenu.classList.remove("visible");
-    addWithMenu.setAttribute("aria-hidden", addWithMenu.classList.contains("visible") ? "false" : "true");
-    dateTimeMenu.setAttribute("aria-hidden", "true");
   });
 
   addWithDate.addEventListener("click", (e) => {
     e.stopPropagation();
     dateTimeMenu.classList.toggle("visible");
     addWithMenu.classList.remove("visible");
-    dateTimeMenu.setAttribute("aria-hidden", dateTimeMenu.classList.contains("visible") ? "false" : "true");
-    addWithMenu.setAttribute("aria-hidden", "true");
     setTimeout(() => dateTimeInput.focus(), 50);
   });
-
-  addWithMenu.addEventListener("click", (e) => e.stopPropagation());
-  dateTimeMenu.addEventListener("click", (e) => e.stopPropagation());
 
   setDateTimeBtn.addEventListener("click", () => {
     if (!dateTimeInput.value) {
@@ -302,60 +261,171 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     tempDateTime = dateTimeInput.value;
     dateTimeMenu.classList.remove("visible");
-    dateTimeMenu.setAttribute("aria-hidden", "true");
     taskInput.focus();
     showMessage("Date set ✔");
   });
 
-  // Close menus on outside click
   document.addEventListener("click", () => closeMenus());
 
   // -----------------------
-  // Add task events (button + Enter)
+  // Add task events
   // -----------------------
   addTaskBtn.addEventListener("click", () => addTask());
   taskInput.addEventListener("keypress", (e) => { if (e.key === "Enter") addTask(); });
 
-  // load existing
   loadTasks();
-
-  // initialize drag listeners for lists (once)
   initListsForDrag();
 }); // end DOMContentLoaded
 
 // -----------------------
-// Drag & Drop helpers
+// Drag & Drop (Desktop)
 // -----------------------
-
-// Attach drag handlers to a single task element (for new items)
 function attachDragHandlers(task) {
-  // make draggable
   task.setAttribute("draggable", "true");
 
   task.addEventListener("dragstart", (e) => {
-    // small timeout so class is added after drag starts (consistent visual)
     setTimeout(() => task.classList.add("dragging"), 0);
-    // optional: set dataTransfer so some browsers consider it draggable
-    try { e.dataTransfer.setData("text/plain", "drag"); } catch (err) {}
+    try { e.dataTransfer.setData("text/plain", "drag"); } catch {}
   });
 
   task.addEventListener("dragend", () => {
     task.classList.remove("dragging");
-    // remove any leftover placeholder
     const placeholder = document.querySelector(".placeholder");
     if (placeholder) placeholder.remove();
-    // save ordering after drag end
     if (typeof saveTasks === "function") saveTasks();
   });
 }
 
-// initialize lists to accept drops (called once and after load)
+// -----------------------
+// Touch support (Mobile)
+// -----------------------
+function attachTouchHandlers(task) {
+  let draggingElem = null;
+  let originParent = null;
+  let originNextSibling = null;
+
+  task.addEventListener("touchstart", (e) => {
+    const touch = e.touches[0];
+    originParent = task.parentElement;
+    originNextSibling = task.nextSibling;
+
+    draggingElem = task.cloneNode(true);
+    draggingElem.classList.add("dragging");
+    Object.assign(draggingElem.style, {
+      position: "fixed",
+      left: `${touch.clientX - task.offsetWidth / 2}px`,
+      top: `${touch.clientY - task.offsetHeight / 2}px`,
+      width: `${task.offsetWidth}px`,
+      height: `${task.offsetHeight}px`,
+      pointerEvents: "none",
+      opacity: "0.85",
+      transition: "transform 0.18s ease, opacity 0.2s ease",
+      zIndex: "9999"
+    });
+    document.body.appendChild(draggingElem);
+
+    task.style.visibility = "hidden";
+    task.classList.add("placeholder");
+  }, { passive: true });
+
+  task.addEventListener("touchmove", (e) => {
+    if (!draggingElem) return;
+    const touch = e.touches[0];
+    draggingElem.style.left = `${touch.clientX - task.offsetWidth / 2}px`;
+    draggingElem.style.top = `${touch.clientY - task.offsetHeight / 2}px`;
+  }, { passive: true });
+
+  task.addEventListener("touchend", (e) => {
+    if (!draggingElem) {
+      task.style.visibility = "";
+      task.classList.remove("placeholder");
+      if (typeof saveTasks === "function") saveTasks();
+      return;
+    }
+
+    const touch = e.changedTouches[0];
+    const under = document.elementFromPoint(touch.clientX, touch.clientY);
+    const dropZone = under?.closest(".task-list");
+
+    if (dropZone) {
+      const underTask = under?.closest(".task");
+      let insertBefore = null;
+      if (underTask && underTask !== task) {
+        const rect = underTask.getBoundingClientRect();
+        insertBefore = (touch.clientY < rect.top + rect.height / 2) ? underTask : underTask.nextSibling;
+      }
+      moveTaskWithAnimation(task, dropZone, insertBefore);
+    } else {
+      moveTaskWithAnimation(task, originParent, originNextSibling);
+    }
+
+    draggingElem.remove();
+    draggingElem = null;
+  }, { passive: true });
+}
+
+// -----------------------
+// Move animation
+// -----------------------
+function moveTaskWithAnimation(task, targetList, insertBefore = null) {
+  if (!task || !targetList) return;
+
+  const startRect = task.getBoundingClientRect();
+  let endRect;
+  if (insertBefore && insertBefore.getBoundingClientRect) {
+    endRect = insertBefore.getBoundingClientRect();
+  } else {
+    const firstChild = targetList.querySelector(".task");
+    endRect = firstChild ? firstChild.getBoundingClientRect() : targetList.getBoundingClientRect();
+  }
+
+  const clone = task.cloneNode(true);
+  Object.assign(clone.style, {
+    position: "fixed",
+    left: `${startRect.left}px`,
+    top: `${startRect.top}px`,
+    width: `${startRect.width}px`,
+    height: `${startRect.height}px`,
+    margin: "0",
+    pointerEvents: "none",
+    zIndex: "9999",
+    transition: "all 200ms ease",
+    boxSizing: "border-box"
+  });
+  document.body.appendChild(clone);
+
+  task.style.visibility = "hidden";
+
+  requestAnimationFrame(() => {
+    clone.style.left = `${endRect.left}px`;
+    clone.style.top = `${endRect.top}px`;
+    clone.style.width = `${endRect.width}px`;
+    clone.style.height = `${endRect.height}px`;
+    clone.style.opacity = "0.95";
+  });
+
+  const cleanup = () => {
+    clone.remove();
+    if (insertBefore && insertBefore.parentElement === targetList) {
+      targetList.insertBefore(task, insertBefore);
+    } else {
+      targetList.appendChild(task);
+    }
+    task.style.visibility = "";
+    task.classList.remove("placeholder");
+    if (typeof saveTasks === "function") saveTasks();
+  };
+
+  clone.addEventListener("transitionend", cleanup, { once: true });
+  setTimeout(cleanup, 350);
+}
+
+// -----------------------
+// Init lists
+// -----------------------
 function initListsForDrag() {
   const lists = document.querySelectorAll(".task-list");
-  if (!lists || lists.length === 0) return;
-
   lists.forEach(list => {
-    // dragover: decide where to show placeholder
     list.addEventListener("dragover", (e) => {
       e.preventDefault();
       const draggingTask = document.querySelector(".dragging");
@@ -363,68 +433,42 @@ function initListsForDrag() {
 
       const afterElement = getDragAfterElement(list, e.clientY);
       let placeholder = document.querySelector(".placeholder");
-
       if (!placeholder) {
         placeholder = document.createElement("div");
         placeholder.className = "placeholder";
       }
-
-      if (afterElement == null) {
-        // if list has no children or should be appended at end
-        list.appendChild(placeholder);
-      } else {
-        list.insertBefore(placeholder, afterElement);
-      }
+      if (afterElement == null) list.appendChild(placeholder);
+      else list.insertBefore(placeholder, afterElement);
     });
 
-    // remove placeholder if leaving list area
-    list.addEventListener("dragleave", (e) => {
-      // only remove when leaving to outside the list (not when over children)
-      const rect = list.getBoundingClientRect();
-      if (e.clientX < rect.left || e.clientX > rect.right || e.clientY < rect.top || e.clientY > rect.bottom) {
-        const placeholder = document.querySelector(".placeholder");
-        if (placeholder) placeholder.remove();
-      }
-    });
-
-    // on drop: replace placeholder with dragging element
     list.addEventListener("drop", (e) => {
       e.preventDefault();
       const draggingTask = document.querySelector(".dragging");
       const placeholder = document.querySelector(".placeholder");
       if (!draggingTask) return;
-
-      if (placeholder) {
-        list.insertBefore(draggingTask, placeholder);
-        placeholder.remove();
-      } else {
-        list.appendChild(draggingTask);
-      }
-      // save after drop
-      if (typeof saveTasks === "function") saveTasks();
+      moveTaskWithAnimation(draggingTask, list, placeholder || null);
+      if (placeholder) placeholder.remove();
     });
   });
 
-  // For any already-existing tasks on page load, attach handlers
   document.querySelectorAll(".task").forEach(t => {
-    // avoid attaching twice
     if (!t.hasAttribute("draggable")) attachDragHandlers(t);
+    attachTouchHandlers(t);
   });
 }
 
-// get element after which the dragging item should be inserted
+// -----------------------
+// Helper
+// -----------------------
 function getDragAfterElement(list, y) {
   const draggableElements = [...list.querySelectorAll(".task:not(.dragging)")];
-
   let closest = { offset: Number.NEGATIVE_INFINITY, element: null };
   draggableElements.forEach(child => {
     const box = child.getBoundingClientRect();
     const offset = y - box.top - box.height / 2;
-    // offset < 0 means cursor is above middle of this child -> candidate
     if (offset < 0 && offset > closest.offset) {
-      closest = { offset: offset, element: child };
+      closest = { offset, element: child };
     }
   });
-
-  return closest.element; // may be null (meaning append to end)
+  return closest.element;
 }
