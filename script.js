@@ -1,3 +1,4 @@
+// script.js (استبدل الملف كله بالمحتوى ده)
 document.addEventListener("DOMContentLoaded", () => {
   const taskInput = document.getElementById("taskInput");
   const addTaskBtn = document.getElementById("addTaskBtn");
@@ -47,6 +48,9 @@ document.addEventListener("DOMContentLoaded", () => {
       li.classList.add("completed");
       completedList.appendChild(li);
     });
+
+    // after loading existing items, attach drag handlers and initialize placeholder listeners
+    initListsForDrag();
   }
 
   // -----------------------
@@ -73,6 +77,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // -----------------------
   function createTaskElement(text, datetime = null) {
     const li = document.createElement("li");
+    li.classList.add("task");
     li.dataset.datetime = datetime || "";
 
     // main text
@@ -202,6 +207,9 @@ document.addEventListener("DOMContentLoaded", () => {
       saveTasks();
     });
 
+    // attach drag handlers for this li (so new items are draggable)
+    attachDragHandlers(li);
+
     return li;
   }
 
@@ -310,4 +318,113 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // load existing
   loadTasks();
-});
+
+  // initialize drag listeners for lists (once)
+  initListsForDrag();
+}); // end DOMContentLoaded
+
+// -----------------------
+// Drag & Drop helpers
+// -----------------------
+
+// Attach drag handlers to a single task element (for new items)
+function attachDragHandlers(task) {
+  // make draggable
+  task.setAttribute("draggable", "true");
+
+  task.addEventListener("dragstart", (e) => {
+    // small timeout so class is added after drag starts (consistent visual)
+    setTimeout(() => task.classList.add("dragging"), 0);
+    // optional: set dataTransfer so some browsers consider it draggable
+    try { e.dataTransfer.setData("text/plain", "drag"); } catch (err) {}
+  });
+
+  task.addEventListener("dragend", () => {
+    task.classList.remove("dragging");
+    // remove any leftover placeholder
+    const placeholder = document.querySelector(".placeholder");
+    if (placeholder) placeholder.remove();
+    // save ordering after drag end
+    if (typeof saveTasks === "function") saveTasks();
+  });
+}
+
+// initialize lists to accept drops (called once and after load)
+function initListsForDrag() {
+  const lists = document.querySelectorAll(".task-list");
+  if (!lists || lists.length === 0) return;
+
+  lists.forEach(list => {
+    // dragover: decide where to show placeholder
+    list.addEventListener("dragover", (e) => {
+      e.preventDefault();
+      const draggingTask = document.querySelector(".dragging");
+      if (!draggingTask) return;
+
+      const afterElement = getDragAfterElement(list, e.clientY);
+      let placeholder = document.querySelector(".placeholder");
+
+      if (!placeholder) {
+        placeholder = document.createElement("div");
+        placeholder.className = "placeholder";
+      }
+
+      if (afterElement == null) {
+        // if list has no children or should be appended at end
+        list.appendChild(placeholder);
+      } else {
+        list.insertBefore(placeholder, afterElement);
+      }
+    });
+
+    // remove placeholder if leaving list area
+    list.addEventListener("dragleave", (e) => {
+      // only remove when leaving to outside the list (not when over children)
+      const rect = list.getBoundingClientRect();
+      if (e.clientX < rect.left || e.clientX > rect.right || e.clientY < rect.top || e.clientY > rect.bottom) {
+        const placeholder = document.querySelector(".placeholder");
+        if (placeholder) placeholder.remove();
+      }
+    });
+
+    // on drop: replace placeholder with dragging element
+    list.addEventListener("drop", (e) => {
+      e.preventDefault();
+      const draggingTask = document.querySelector(".dragging");
+      const placeholder = document.querySelector(".placeholder");
+      if (!draggingTask) return;
+
+      if (placeholder) {
+        list.insertBefore(draggingTask, placeholder);
+        placeholder.remove();
+      } else {
+        list.appendChild(draggingTask);
+      }
+      // save after drop
+      if (typeof saveTasks === "function") saveTasks();
+    });
+  });
+
+  // For any already-existing tasks on page load, attach handlers
+  document.querySelectorAll(".task").forEach(t => {
+    // avoid attaching twice
+    if (!t.hasAttribute("draggable")) attachDragHandlers(t);
+  });
+}
+
+// get element after which the dragging item should be inserted
+function getDragAfterElement(list, y) {
+  const draggableElements = [...list.querySelectorAll(".task:not(.dragging)")];
+
+  let closest = { offset: Number.NEGATIVE_INFINITY, element: null };
+  draggableElements.forEach(child => {
+    const box = child.getBoundingClientRect();
+    const offset = y - box.top - box.height / 2;
+    // offset < 0 means cursor is above middle of this child -> candidate
+    if (offset < 0 && offset > closest.offset) {
+      closest = { offset: offset, element: child };
+    }
+  });
+
+  return closest.element; // may be null (meaning append to end)
+}

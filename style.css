@@ -270,7 +270,25 @@ body{
 /* responsiveness */
 @media (max-width:720px){
   .tasks-container{ flex-direction:column; padding:0 12px }
-  .input-container-bottom{ flex-direction:column; padding:12px; gap:8px; width:96%; }
+
+  .input-container-bottom{
+    flex-direction: row;   /* خليتها زي اللاب */
+    padding:8px;
+    gap:6px;
+    width:96%;
+  }
+
   .menu-card{ right:8px; left:auto; bottom:calc(100% + 10px) }
   #dateTimeMenu{ bottom:calc(100% + 120px) }
+}
+.task.dragging {
+  opacity: 0.5;
+  background: #ddd;
+  border: 2px dashed #aaa;
+}
+.placeholder {
+  height: 50px;
+  background: rgba(52, 152, 219, 0.15);
+  border-radius: 8px;
+  margin: 5px 0;
 }
