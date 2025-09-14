@@ -329,64 +329,41 @@ function attachTouchHandlers(task) {
       task.style.opacity = "0.85";
       task.style.zIndex = "9999";
 
-      const touch = e.touches[0];
-      const under = document.elementFromPoint(touch.clientX, touch.clientY);
-      const dropZone = under?.closest(".task-list");
-
-      if (dropZone) {
-        if (!placeholder) {
-          placeholder = document.createElement("div");
-          placeholder.className = "placeholder";
-          placeholder.style.height = `${task.offsetHeight}px`;
-          placeholder.style.marginBottom = "10px";
-        }
-
-        const allTasks = [...dropZone.querySelectorAll(".task:not(.dragging)")];
-        let insertBefore = null;
-        for (let t of allTasks) {
-          const rect = t.getBoundingClientRect();
-          if (touch.clientY < rect.top + rect.height / 2) {
-            insertBefore = t;
-            break;
-          }
-        }
-
-        if (!dropZone.contains(placeholder)) dropZone.appendChild(placeholder);
-        dropZone.insertBefore(placeholder, insertBefore);
+      const list = task.parentNode;
+      if (!placeholder) {
+        placeholder = document.createElement("div");
+        placeholder.className = "placeholder";
+        placeholder.style.height = `${task.offsetHeight}px`;
+        placeholder.style.marginBottom = "10px";
+        list.insertBefore(placeholder, task.nextSibling);
       }
+
+      const tasks = [...list.querySelectorAll(".task:not(.dragging)")];
+      let inserted = false;
+      for (let t of tasks) {
+        const rect = t.getBoundingClientRect();
+        const middle = rect.top + rect.height / 2;
+        if (currentY < middle) {
+          list.insertBefore(placeholder, t);
+          inserted = true;
+          break;
+        }
+      }
+      if (!inserted) list.appendChild(placeholder);
     }
   }, { passive: false });
 
   task.addEventListener("touchend", e => {
     if (!isDragging) return;
-
     task.style.transition = "transform 0.2s ease, opacity 0.2s ease";
     task.style.transform = "";
     task.style.opacity = "";
     task.style.zIndex = "";
-
-    const touch = e.changedTouches[0];
-    const under = document.elementFromPoint(touch.clientX, touch.clientY);
-    const dropZone = under?.closest(".task-list");
-
-    if (dropZone) {
-      const allTasks = [...dropZone.querySelectorAll(".task")];
-      let insertBefore = null;
-      for (let t of allTasks) {
-        if (t === task) continue;
-        const rect = t.getBoundingClientRect();
-        if (touch.clientY < rect.top + rect.height / 2) {
-          insertBefore = t;
-          break;
-        }
-      }
-      dropZone.insertBefore(task, insertBefore || null);
-    } else {
-      originalParent.insertBefore(task, originalNext);
+    if (placeholder) {
+      placeholder.parentNode.insertBefore(task, placeholder);
+      placeholder.remove();
+      placeholder = null;
     }
-
-    if (placeholder) placeholder.remove();
-    placeholder = null;
     isDragging = false;
     if (typeof saveTasks === "function") saveTasks();
   }, { passive: false });
