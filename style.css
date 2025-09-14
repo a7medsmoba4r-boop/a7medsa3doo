@@ -274,7 +274,7 @@ body{
   .tasks-container{ flex-direction:column; padding:0 12px }
 
   .input-container-bottom{
-    flex-direction: row;   /* زي اللاب */
+    flex-direction: row;
     padding:8px;
     gap:6px;
     width:96%;

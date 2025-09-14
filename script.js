@@ -51,7 +51,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // Add task
   // -----------------------
   function addTask(text = null, datetime = null) {
-    const taskText = text || taskInput.value.trim();
+    const taskText = text ?? taskInput.value.trim();
     if (!taskText) return;
     if (tempDateTime && !datetime) datetime = tempDateTime;
 
@@ -167,9 +167,7 @@ document.addEventListener("DOMContentLoaded", () => {
         saveTasks();
       }
 
-      input.addEventListener("keypress", ev => {
-        if (ev.key === "Enter") commitEdit();
-      });
+      input.addEventListener("keypress", ev => { if (ev.key === "Enter") commitEdit(); });
       input.addEventListener("blur", commitEdit);
     });
 
@@ -293,8 +291,7 @@ function attachDragHandlers(task) {
   task.setAttribute("draggable", "true");
 
   task.addEventListener("dragstart", e => {
-    const editing = task.querySelector(".edit-input");
-    if (editing) { e.preventDefault(); return; }
+    if (task.querySelector(".edit-input")) { e.preventDefault(); return; }
     task.classList.add("dragging");
     try { e.dataTransfer.setData("text/plain", "drag"); } catch {}
   });
@@ -308,6 +305,8 @@ function attachDragHandlers(task) {
 
 function attachTouchHandlers(task) {
   let startY = 0, currentY = 0, isDragging = false;
+  let placeholder = null;
+  let scrollY = 0;
 
   task.addEventListener("touchstart", e => {
     if (task.querySelector(".edit-input")) return;
@@ -320,12 +319,20 @@ function attachTouchHandlers(task) {
     currentY = e.touches[0].clientY;
     const dy = currentY - startY;
     if (Math.abs(dy) > 5) isDragging = true;
+
     if (isDragging) {
+      e.preventDefault(); // منع الصفحة تتحرك
+      if (!placeholder) {
+        placeholder = document.createElement("div");
+        placeholder.className = "placeholder";
+        placeholder.style.height = `${task.offsetHeight}px`;
+        task.parentNode.insertBefore(placeholder, task.nextSibling);
+      }
       task.style.transform = `translateY(${dy}px)`;
       task.style.opacity = "0.85";
       task.style.zIndex = "9999";
     }
-  }, { passive: true });
+  }, { passive: false });
 
   task.addEventListener("touchend", e => {
     if (!isDragging) return;
@@ -348,12 +355,14 @@ function attachTouchHandlers(task) {
           break;
         }
       }
-      dropZone.insertBefore(task, insertBefore);
+      dropZone.insertBefore(task, insertBefore || null);
     }
 
+    if (placeholder) placeholder.remove();
+    placeholder = null;
     isDragging = false;
     if (typeof saveTasks === "function") saveTasks();
-  }, { passive: true });
+  }, { passive: false });
 }
 
 function initListsForDrag() {
@@ -381,10 +390,7 @@ function initListsForDrag() {
       const draggingTask = document.querySelector(".dragging");
       const placeholder = document.querySelector(".placeholder");
       if (!draggingTask) return;
-      if (placeholder) {
-        list.insertBefore(draggingTask, placeholder);
-        placeholder.remove();
-      }
+      if (placeholder) list.insertBefore(draggingTask, placeholder);
       draggingTask.classList.remove("dragging");
       if (typeof saveTasks === "function") saveTasks();
     });
