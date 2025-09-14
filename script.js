@@ -1,4 +1,4 @@
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", () => { 
   const taskInput = document.getElementById("taskInput");
   const addTaskBtn = document.getElementById("addTaskBtn");
   const inprogressList = document.getElementById("inprogress-list");
@@ -51,8 +51,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // Add task
   // -----------------------
   function addTask(text = null, datetime = null) {
-   const taskText = (typeof text === "string" ? text : taskInput.value.trim());
-
+    const taskText = (typeof text === "string" ? text : taskInput.value.trim());
     if (!taskText) return;
     if (tempDateTime && !datetime) datetime = tempDateTime;
 
@@ -307,12 +306,15 @@ function attachDragHandlers(task) {
 function attachTouchHandlers(task) {
   let startY = 0, currentY = 0, isDragging = false;
   let placeholder = null;
-  let scrollY = 0;
+  let originalParent = null;
+  let originalNext = null;
 
   task.addEventListener("touchstart", e => {
     if (task.querySelector(".edit-input")) return;
     startY = e.touches[0].clientY;
     task.style.transition = "none";
+    originalParent = task.parentElement;
+    originalNext = task.nextElementSibling;
   }, { passive: true });
 
   task.addEventListener("touchmove", e => {
@@ -322,21 +324,42 @@ function attachTouchHandlers(task) {
     if (Math.abs(dy) > 5) isDragging = true;
 
     if (isDragging) {
-      e.preventDefault(); // منع الصفحة تتحرك
-      if (!placeholder) {
-        placeholder = document.createElement("div");
-        placeholder.className = "placeholder";
-        placeholder.style.height = `${task.offsetHeight}px`;
-        task.parentNode.insertBefore(placeholder, task.nextSibling);
-      }
+      e.preventDefault();
       task.style.transform = `translateY(${dy}px)`;
       task.style.opacity = "0.85";
       task.style.zIndex = "9999";
+
+      const touch = e.touches[0];
+      const under = document.elementFromPoint(touch.clientX, touch.clientY);
+      const dropZone = under?.closest(".task-list");
+
+      if (dropZone) {
+        if (!placeholder) {
+          placeholder = document.createElement("div");
+          placeholder.className = "placeholder";
+          placeholder.style.height = `${task.offsetHeight}px`;
+          placeholder.style.marginBottom = "10px";
+        }
+
+        const allTasks = [...dropZone.querySelectorAll(".task:not(.dragging)")];
+        let insertBefore = null;
+        for (let t of allTasks) {
+          const rect = t.getBoundingClientRect();
+          if (touch.clientY < rect.top + rect.height / 2) {
+            insertBefore = t;
+            break;
+          }
+        }
+
+        if (!dropZone.contains(placeholder)) dropZone.appendChild(placeholder);
+        dropZone.insertBefore(placeholder, insertBefore);
+      }
     }
   }, { passive: false });
 
   task.addEventListener("touchend", e => {
     if (!isDragging) return;
+
     task.style.transition = "transform 0.2s ease, opacity 0.2s ease";
     task.style.transform = "";
     task.style.opacity = "";
@@ -350,6 +373,7 @@ function attachTouchHandlers(task) {
       const allTasks = [...dropZone.querySelectorAll(".task")];
       let insertBefore = null;
       for (let t of allTasks) {
+        if (t === task) continue;
         const rect = t.getBoundingClientRect();
         if (touch.clientY < rect.top + rect.height / 2) {
           insertBefore = t;
@@ -357,6 +381,8 @@ function attachTouchHandlers(task) {
         }
       }
       dropZone.insertBefore(task, insertBefore || null);
+    } else {
+      originalParent.insertBefore(task, originalNext);
     }
 
     if (placeholder) placeholder.remove();
