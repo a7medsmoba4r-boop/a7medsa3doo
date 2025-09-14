@@ -306,15 +306,11 @@ function attachDragHandlers(task) {
 function attachTouchHandlers(task) {
   let startY = 0, currentY = 0, isDragging = false;
   let placeholder = null;
-  let originalParent = null;
-  let originalNext = null;
 
   task.addEventListener("touchstart", e => {
     if (task.querySelector(".edit-input")) return;
     startY = e.touches[0].clientY;
     task.style.transition = "none";
-    originalParent = task.parentElement;
-    originalNext = task.nextElementSibling;
   }, { passive: true });
 
   task.addEventListener("touchmove", e => {
