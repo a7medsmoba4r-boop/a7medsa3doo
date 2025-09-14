@@ -19,9 +19,10 @@
   <div class="tasks-container">
     <div class="task-column">
       <h2>In Progress</h2>
-      <ul id="inprogress-list" class="task-list"></ul>
+     <ul id="inprogress-list" class="task-list"></ul>
       <button class="clear-btn" data-target="inprogress-list">Clear All</button>
     </div>
+
     <div class="task-column">
       <h2>Completed</h2>
       <ul id="completed-list" class="task-list"></ul>
@@ -33,13 +34,19 @@
   <div class="input-container-bottom">
     <input type="text" id="taskInput" placeholder="Add a task..." />
     <button id="addTaskBtn">Add</button>
-    <div class="add-with-wrapper">
-      <span id="plusBtn">+</span>
+
+    <div class="add-with-wrapper" aria-haspopup="true">
+      <!-- + as plain text -->
+      <span id="plusBtn" role="button" aria-label="More">+</span>
+
+      <!-- small menu above the + -->
       <div id="addWithMenu" class="menu-card" aria-hidden="true">
         <button id="addWithDate" class="menu-action">Add Task With Date</button>
       </div>
+
+      <!-- date/time panel (appears above the small menu) -->
       <div id="dateTimeMenu" class="menu-card" aria-hidden="true">
-        <label for="dateTimeInput">Pick date & time</label>
+        <label for="dateTimeInput">Pick date &amp; time</label>
         <input type="datetime-local" id="dateTimeInput" />
         <button id="setDateTimeBtn">Set</button>
       </div>
