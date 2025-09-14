@@ -51,7 +51,8 @@ document.addEventListener("DOMContentLoaded", () => {
   // Add task
   // -----------------------
   function addTask(text = null, datetime = null) {
-    const taskText = text ?? taskInput.value.trim();
+   const taskText = (typeof text === "string" ? text : taskInput.value.trim());
+
     if (!taskText) return;
     if (tempDateTime && !datetime) datetime = tempDateTime;
 
